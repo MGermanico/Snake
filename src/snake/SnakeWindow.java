@@ -19,7 +19,7 @@ public class SnakeWindow extends JPanel{
     
     public static void main(String[] args) {
         JFrame back = new JFrame();
-        back.setBounds(0, 0, 600, 600);
+        back.setBounds(0, 0, 1000, 1000);
         back.setVisible(true);
         SnakeWindow snakeWindow = new SnakeWindow();
         back.add(snakeWindow);
@@ -29,7 +29,7 @@ public class SnakeWindow extends JPanel{
     GridManager gm;
     
     public SnakeWindow() {
-        GridManager gm = new GridManager(20, 20, 500);
+        GridManager gm = new GridManager(80, 60, 1000);
         this.gm = gm;
         this.add(gm.getPanel());
         gm.startGame();

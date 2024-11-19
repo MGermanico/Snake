@@ -16,28 +16,28 @@ import javax.swing.JPanel;
  * @author migue
  */
 public class GridManager{
-    Grid grid;
+    GridOfGrids gridOfGrids;
 
     Position headPosition;
     
     int nextDirection;
     
     public GridManager(int x, int y, int diagonal) {
-        grid = new Grid(x, y, diagonal);
+        gridOfGrids = new GridOfGrids(x, y, diagonal);
     }
     
     public JPanel getPanel(){
-        grid.updatePanel();
-        grid.revalidate();
-        return grid;
+        gridOfGrids.updatePanels();
+        gridOfGrids.revalidate();
+        return gridOfGrids;
     }
     
     public void startGame(){
-        grid.reset();
+        gridOfGrids.reset();
         
         spawnHead();
         
-        grid.setApple();
+        gridOfGrids.setApple();
         
         Thread tickThread = new Thread(new Runnable() {
             @Override
@@ -58,34 +58,34 @@ public class GridManager{
     }
     
     private void tick(){
-        Pixel nextPixel = grid.getNextPixel(headPosition, nextDirection);
+        Pixel nextPixel = gridOfGrids.getNextPixel(headPosition, nextDirection);
         nextPixel.setDirection(nextDirection);
         
         if (nextPixel.getState() == Pixel.APPLE_STATE) {
-            grid.setApple();
+            gridOfGrids.setApple();
         }else{
-            grid.deleteTail(headPosition);
+            gridOfGrids.deleteTail(headPosition);
         }
-        grid.paintPixel(nextPixel);
+        gridOfGrids.paintPixel(nextPixel);
         headPosition = nextPixel.getPosition();
-        grid.updatePanel();
-        grid.revalidate();
+        gridOfGrids.updatePanels();
+        gridOfGrids.revalidate();
     }
     
     private void spawnHead(){
         headPosition = getRandomHeadPosition();
-        grid.getPixel(headPosition).setDirection(Pixel.randomDirection());
-        nextDirection = grid.getPixel(headPosition).getDirection();
-        grid.paintPixel(headPosition);
-        grid.updatePanel();
-        grid.repaint();
+        gridOfGrids.getPixel(headPosition).setDirection(Pixel.randomDirection());
+        nextDirection = gridOfGrids.getPixel(headPosition).getDirection();
+        gridOfGrids.paintPixel(headPosition);
+        gridOfGrids.updatePanels();
+        gridOfGrids.repaint();
     }
 
     private Position getRandomHeadPosition() {
-        int secureXDistance = (int)(grid.getX()*1.0/4);
-        int secureYDistance = (int)(grid.getY()*1.0/4);
-        int x = (int) Utils.randomNumber(secureXDistance, grid.getX() - secureXDistance);
-        int y = (int) Utils.randomNumber(secureYDistance, grid.getY() - secureYDistance);
+        int secureXDistance = (int)(gridOfGrids.xPixel*1.0/4);
+        int secureYDistance = (int)(gridOfGrids.yPixel*1.0/4);
+        int x = (int) Utils.randomNumber(secureXDistance, gridOfGrids.xPixel - secureXDistance);
+        int y = (int) Utils.randomNumber(secureYDistance, gridOfGrids.yPixel - secureYDistance);
         return new Position(x, y);
     }
     

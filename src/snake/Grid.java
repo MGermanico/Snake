@@ -4,6 +4,8 @@
  */
 package snake;
 
+import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.GridLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -23,29 +25,26 @@ public class Grid extends JPanel{
     private int x;
     private int y;
     
-    public Grid(int x, int y, int diagonalSize) {
+    int xOffset;
+    int yOffset;
+    
+    public Grid(int x, int y, int xOffset, int yOffset, double pixelSize) {
         this.grid = new Pixel[x][y];
         this.gridPanel = new JPanel(new GridLayout(x, y));
-        double pixelSize = getPixelSize(diagonalSize);
         this.x = x;
         this.y = y;
+        this.xOffset = xOffset;
+        this.yOffset = yOffset;
         width = (int) (pixelSize*x);
         height = (int) (pixelSize*y);
         initGrid(pixelSize);
         updatePanel();
         this.add(gridPanel);
     }
-
-    public void paintPixel(Position position){
-        grid[position.getX()][position.getY()].setState(Pixel.SNAKE_STATE);
-    }
-    public void paintPixel(Pixel pixel){
-        System.out.println("pintar ");
-        pixel.setState(Pixel.SNAKE_STATE);
-    }
     
     public Pixel getPixel(Position position){
-        return grid[position.getX()][position.getY()];
+        System.out.println("- " + xOffset);
+        return grid[position.getX()-xOffset][position.getY()-yOffset];
     }
     public Pixel getPixel(int x, int y){
         return grid[x][y];
@@ -54,34 +53,29 @@ public class Grid extends JPanel{
     private void initGrid(double pixelWidthSize) {
         for (int x = 0; x < grid.length; x++) {
             for (int y = 0; y < grid[x].length; y++) {
-                grid[x][y] = new Pixel(new Position(x, y), (int) pixelWidthSize);
+                grid[x][y] = new Pixel(new Position(x+xOffset, y+yOffset), (int) pixelWidthSize);
             }
         }
     }
     
+    public JPanel getTestPanel(){
+        JPanel ret = new JPanel(new GridLayout(x, y));
+        for (int width = 0; width < grid.length; width++) {
+            for (int height = 0; height < grid[width].length; height++) {
+                ret.add(getPixel(width, height).getPanel());
+            }
+        }
+        return ret;
+    }
+    
     public void updatePanel(){
+        
         gridPanel.removeAll();
         for (int width = 0; width < grid.length; width++) {
             for (int height = 0; height < grid[width].length; height++) {
                 gridPanel.add(getPixel(width, height).getPanel());
             }
         }
-    }
-
-    private double getPixelSize(int d) {
-        int x = grid.length;
-        int y = grid[0].length;
-        double alfa = Math.atan(y*1.0/x);
-        double h = Math.sin(alfa);
-        double ret = (d*h)/y;
-//        System.out.println("x: " + x + " , y: " + y + " , d: " + d);
-//        System.out.printf("\n"
-//                + "%d*sin(atan(%d/%d))/%d"
-//                + "\n\n",d, y, x, y);
-//        System.out.println(alfa);
-//        System.out.println(h);
-//        System.out.println(ret);
-        return ret+5;
     }
 
     public void reset() {
@@ -105,18 +99,7 @@ public class Grid extends JPanel{
     public Pixel getPixelWithOffset(Position position, int xOffset, int yOffset){
         System.out.println(xOffset + " , " + yOffset);
         System.out.println("x: " + (position.getX() + xOffset) + " y: " + (position.getY() + yOffset));
-        return grid[position.getX() + yOffset][position.getY() + xOffset];
-    }
-
-    public void deleteTail(Position position){
-        Pixel pixel = getPixel(position);
-        Pixel nextPixel = getNextPixel(position, pixel.getOppositeDirection());
-        System.out.println(nextPixel.getPosition());
-        if (nextPixel.getState() == Pixel.SNAKE_STATE) {
-            deleteTail(nextPixel.getPosition());
-        }else{
-            pixel.resetPixel();
-        }
+        return getPixel(position.getX() + yOffset, position.getY() + xOffset);
     }
     
     public void setApple(){
