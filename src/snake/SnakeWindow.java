@@ -17,19 +17,10 @@ import javax.swing.JPanel;
  */
 public class SnakeWindow extends JPanel{
     
-    public static void main(String[] args) {
-        JFrame back = new JFrame();
-        back.setBounds(0, 0, 1000, 1000);
-        back.setVisible(true);
-        SnakeWindow snakeWindow = new SnakeWindow();
-        back.add(snakeWindow);
-        back.addKeyListener(snakeWindow.getGm().getKeyListener());
-    }
-    
     GridManager gm;
     
     public SnakeWindow() {
-        GridManager gm = new GridManager(105, 105, 500);
+        GridManager gm = new GridManager(105, 105, 500, 2);
         this.gm = gm;
         this.add(gm.getPanel());
         gm.startGame();

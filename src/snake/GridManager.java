@@ -6,6 +6,7 @@ package snake;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
@@ -15,166 +16,126 @@ import javax.swing.JPanel;
  *
  * @author migue
  */
-public class GridManager{
+public class GridManager {
+
+    Thread gameThread;
+    
     GridOfGrids gridOfGrids;
 
-    Position headPosition;
-    
-    int nextDirection;
-    
-    int queueNextDirection = -1;
-    
-    public GridManager(int x, int y, int diagonal) {
+    ArrayList<SnakeManager> snakeManagerList = new ArrayList<>();
+
+    public GridManager(int x, int y, int diagonal, int nPlayers) {
         gridOfGrids = new GridOfGrids(x, y, diagonal);
+        SnakeManager actualSnakeManager;
+        char[] keys;
+        for (int i = 0; i < nPlayers; i++) {
+            keys = new char[4];
+            if (i == 0) {
+                keys[0] = 'a';
+                keys[1] = 'w';
+                keys[2] = 's';
+                keys[3] = 'd';
+            } else {
+                keys[0] = 'j';
+                keys[1] = 'i';
+                keys[2] = 'k';
+                keys[3] = 'l';
+            }
+            actualSnakeManager = new SnakeManager(this, keys);
+            snakeManagerList.add(actualSnakeManager);
+        }
     }
-    
-    public JPanel getPanel(){
+
+    public JPanel getPanel() {
         gridOfGrids.updatePanels();
         gridOfGrids.revalidate();
         return gridOfGrids;
     }
-    
-    public void startGame(){
+
+    public void startGame() {
         gridOfGrids.reset();
-        
-        spawnHead();
-        
+
+        spawnHeads();
+
         gridOfGrids.setApple();
-        
+
         gridOfGrids.updateAllPanels();
-        
-        moveSnake(true);
-        moveSnake(true);
-        moveSnake(true);
-        moveSnake(true);
-        moveSnake(true);
-        moveSnake(true);
-        moveSnake(true);
-        moveSnake(true);
-        moveSnake(true);
-        moveSnake(true);
-        
-        Thread tickThread = new Thread(new Runnable() {
+
+        initializeSizes();
+
+        gameThread = new Thread(new Runnable() {
             @Override
             public void run() {
                 int i = 2;
-                while(true){
+                while (true) {
                     try {
                         if (i == 2) {
                             i = 0;
-                        }else{
+                        } else {
                             i++;
                         }
-                        Thread.sleep(50L);
-                        tick(i);
+                        Thread.sleep(20L);
+                        tick(1);
                     } catch (InterruptedException ex) {
                         Logger.getLogger(GridManager.class.getName()).log(Level.SEVERE, null, ex);
                         break;
                     }
-                    
+
                 }
             }
         });
-        tickThread.start();
+        gameThread.start();
     }
-    
-    private void tick(int tick){
+
+    private void tick(int tick) {
         if (tick == 1) {
-            moveSnake(false);
-        }else{
+            moveSnakes();
+        } else {
 //            moveSnake(true);
         }
-    }
-    
-    private void moveSnake(boolean doBigger){
-        
-        
-        Pixel nextPixel = gridOfGrids.getNextPixel(headPosition, nextDirection);
-        nextPixel.setDirection(nextDirection);
-        Position prvsHeadPosition = new Position(headPosition.getX(), headPosition.getY());
-        gridOfGrids.getGridChunk(nextPixel.getChunkPosition()).setOneUpdatable();
-        if (nextPixel.getState() == Pixel.APPLE_STATE) {
-            gridOfGrids.setApple();
-        }else if (!doBigger){
-            gridOfGrids.deleteTail(prvsHeadPosition);
-        }
-        gridOfGrids.paintPixel(nextPixel);
-        headPosition = nextPixel.getPosition();
         gridOfGrids.updatePanels();
         gridOfGrids.revalidate();
-        
-        tryToReadQueueDirection();
     }
-    private void tryToReadQueueDirection(){
-        if (queueNextDirection != -1) {
-            System.out.println(Pixel.positionToString(queueNextDirection));
-            if(setNextDirection(queueNextDirection)){
-                queueNextDirection = -1;
-            }
+
+    private void spawnHeads() {
+        for (SnakeManager snakeManager : snakeManagerList) {
+            snakeManager.spawnHead();
         }
     }
-    private void spawnHead(){
-        headPosition = getRandomHeadPosition();
-        Pixel spawnPixel = gridOfGrids.getPixel(headPosition);
-        spawnPixel.setDirection(Pixel.randomDirection());
-        Position chunkPosition = spawnPixel.getChunkPosition();
-        gridOfGrids.getGridChunk(chunkPosition).incrementUpdatable();
-        nextDirection = spawnPixel.getDirection();
-        gridOfGrids.paintPixel(headPosition);
-        gridOfGrids.updatePanels();
-        gridOfGrids.repaint();
+
+    public GridOfGrids getGridOfGrids() {
+        return gridOfGrids;
     }
 
-    private Position getRandomHeadPosition() {
-        int secureXDistance = (int)(gridOfGrids.xPixel*1.0/4);
-        int secureYDistance = (int)(gridOfGrids.yPixel*1.0/4);
-        int x = (int) Utils.randomNumber(secureXDistance, gridOfGrids.xPixel - secureXDistance);
-        int y = (int) Utils.randomNumber(secureYDistance, gridOfGrids.yPixel - secureYDistance);
-        return new Position(x, y);
+    ArrayList<KeyListener> getKeyListeners() {
+        ArrayList<KeyListener> keyListeners = new ArrayList<>();
+        for (SnakeManager snakeManager : snakeManagerList) {
+            keyListeners.add(snakeManager.getKeyListener());
+        }
+        return keyListeners;
     }
-    
-    public KeyListener getKeyListener(){
-        return new KeyListener() {
-            @Override
-            public void keyTyped(KeyEvent e) {
-                char key = e.getKeyChar();
-                
-//                System.out.println(Pixel.positionToString(prvsHeadOppositeDirection));
-                if (key == 'a') {
-                    setNextDirection(Pixel.LEFT_DIRECTION);
-                }else if (key == 'w') {
-                    setNextDirection(Pixel.UP_DIRECTION);
-                }else if (key == 's') {
-                    setNextDirection(Pixel.DOWN_DIRECTION);
-                }else if (key == 'd') {
-                    setNextDirection(Pixel.RIGHT_DIRECTION);
-                }
-            }
 
-            @Override
-            public void keyPressed(KeyEvent e) {
-            }
-
-            @Override
-            public void keyReleased(KeyEvent e) {
-            }
-        };
-    }
-    public boolean setNextDirection(int direction){
-        int oppositeHeadDirection = gridOfGrids.getPixel(headPosition).getOppositeDirection();
-        Pixel prvsHeadPosition = gridOfGrids.getNextPixel(headPosition, oppositeHeadDirection);
-        int prvsHeadOppositeDirection = prvsHeadPosition.getOppositeDirection();
-        if (direction == Pixel.LEFT_DIRECTION || direction == Pixel.RIGHT_DIRECTION || direction == Pixel.DOWN_DIRECTION || direction == Pixel.UP_DIRECTION) {
-            if (prvsHeadOppositeDirection != direction) {
-                nextDirection = direction;
-                return true;
-            }else{
-                queueNextDirection = direction;
-                return false;
-            }
-        }else{
-            Logger.getLogger(GridManager.class.getName()).log(Level.SEVERE, null, new Exception());
-            return false;
+    private void initializeSizes() {
+        for (SnakeManager snakeManager : snakeManagerList) {
+            snakeManager.setInitialSize(15);
         }
     }
+
+    private void moveSnakes() {
+        boolean anyAlive = false;
+        for (SnakeManager snakeManager : snakeManagerList) {
+            if (snakeManager.isAlive()) {
+                anyAlive = true;
+                snakeManager.moveSnake(false);
+            }
+        }
+        if (!anyAlive) {
+            endGame();
+        }
+    }
+
+    private void endGame() {
+        gameThread.interrupt();
+    }
+
 }

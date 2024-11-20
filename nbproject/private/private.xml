@@ -3,11 +3,14 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/D:/NETBEANS/Snake/src/snake/GridManager.java</file>
-            <file>file:/D:/NETBEANS/Snake/src/snake/GridOfGrids.java</file>
-            <file>file:/D:/NETBEANS/Snake/src/snake/Pixel.java</file>
-            <file>file:/D:/NETBEANS/Snake/src/snake/SnakeWindow.java</file>
-            <file>file:/D:/NETBEANS/Snake/src/snake/Grid.java</file>
+            <file>file:/home/tarde/git/Snake/src/snake/Pixel.java</file>
+            <file>file:/home/tarde/git/Snake/src/snake/Exec.java</file>
+            <file>file:/home/tarde/git/Snake/src/snake/GridManager.java</file>
+            <file>file:/home/tarde/git/Snake/src/snake/GridOfGrids.java</file>
+            <file>file:/home/tarde/git/Snake/src/snake/SnakeManager.java</file>
+            <file>file:/home/tarde/git/Snake/src/snake/Grid.java</file>
+            <file>file:/home/tarde/git/Snake/src/snake/SnakeWindow.java</file>
+            <file>file:/home/tarde/git/Snake/src/snake/PrincipalFrame.java</file>
         </group>
     </open-files>
 </project-private>

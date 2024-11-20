@@ -20,6 +20,8 @@ public class Pixel {
     public static final int APPLE_STATE = 2;
     public static final int WALL_STATE = 3;
     
+    
+    
     public static final int NONE_DIRECTION = 0;
     public static final int UP_DIRECTION = 1;
     public static final int DOWN_DIRECTION = 2;
