@@ -45,14 +45,14 @@ public class GridOfGrids extends JPanel{
         }else{
             xChunk = Math.ceilDiv(xPixel, 16);
         }
-        System.out.println("xCHUNK: " + xChunk);
+//        System.out.println("xCHUNK: " + xChunk);
         if (lastYSize == 0) {
             yChunk = (int)(yPixel/16.0);
         }else{
             yChunk = Math.ceilDiv(yPixel, 16);
         }
-        gridOfGridsPanel = new JPanel(new GridLayout(xChunk, yChunk, 10, 10));
-        System.out.println("yCHUNK: " + yChunk);
+        gridOfGridsPanel = new JPanel(new GridLayout(xChunk, yChunk));
+//        System.out.println("yCHUNK: " + yChunk);
         gridOfGrids = new Grid[xChunk][yChunk];
         int xSize;
         int ySize;
@@ -70,7 +70,7 @@ public class GridOfGrids extends JPanel{
                 }else{
                     ySize = 16;
                 }
-                System.out.println("yc"+yCounter+"xc"+xCounter);
+//                System.out.println("yc"+yCounter+"xc"+xCounter);
                 gridOfGrids[xActualChunk][yActualChunk] = new Grid(xSize, ySize, xCounter, yCounter, pixelSize);
                 gridOfGridsPanel.add(gridOfGrids[xActualChunk][yActualChunk]);
                 yCounter += 16;
@@ -84,37 +84,58 @@ public class GridOfGrids extends JPanel{
         double alfa = Math.atan(yPixel*1.0/xPixel);
         double h = Math.sin(alfa);
         double ret = (d*h)/yPixel;
-        System.out.println("x: " + xPixel + " , y: " + yPixel + " , d: " + d);
-        System.out.printf("\n"
-                + "%d*sin(atan(%d/%d))/%d"
-                + "\n\n",d, yPixel, xPixel, yPixel);
-        System.out.println(alfa);
-        System.out.println(h);
-        System.out.println(ret);
+//        System.out.println("x: " + xPixel + " , y: " + yPixel + " , d: " + d);
+//        System.out.printf("\n"
+//                + "%d*sin(atan(%d/%d))/%d"
+//                + "\n\n",d, yPixel, xPixel, yPixel);
+//        System.out.println(alfa);
+//        System.out.println(h);
+//        System.out.println(ret);
         return ret+5;
     }
-
-    void updatePanels() {
-        gridOfGridsPanel.removeAll();
-        gridOfGridsPanel.setPreferredSize(new Dimension(1000, 1000));
-        JPanel panel;
+    public void updateAllPanels(){
         int i = 0;
         for (Grid[] gridOfGrid : gridOfGrids) {
             for (Grid grid : gridOfGrid) {
-                grid.updatePanel();
-//                panel = new JPanel();
-//                panel.setBackground(Color.red);
-//                gridOfGridsPanel.add(new JLabel("aaa"));
-//                gridOfGridsPanel.add(panel, i);
-                gridOfGridsPanel.add(grid.getTestPanel(), i);
-//                gridOfGridsPanel.add(grid, i);
+                gridOfGridsPanel.remove(i);
+                gridOfGridsPanel.add(grid.getPanel(), i);
+                i++;
+            }
+        }
+    }
+    void updatePanels() {
+//        gridOfGridsPanel.removeAll();
+//        gridOfGridsPanel.setPreferredSize(new Dimension(1000, 1000));
+        int i = 0;
+        JPanel panelNoUp;
+        for (Grid[] gridOfGrid : gridOfGrids) {
+            for (Grid grid : gridOfGrid) {
+                if (grid.isUpdatable() || grid.isOneUpdate()) {
+//                    System.out.println("update");
+                    gridOfGridsPanel.remove(i);
+                    gridOfGridsPanel.add(grid.getPanel(), i);
+                    if (grid.isOneUpdate()) {
+//                        System.out.println("last update");
+                        grid.incrementUpdatable();
+                    }
+                }else{
+//                    gridOfGridsPanel.remove(i);
+//                    gridOfGridsPanel.add(grid.getNonUpdatablePanel(), i);
+                }
                 i++;
             }
         }
     }
 
-    void setApple() {
-        System.out.println("set apple");
+    public Grid getGridChunk(Position chunkPosition){
+//        System.out.println(gridOfGrids[chunkPosition.getX()][chunkPosition.getY()]);
+        return gridOfGrids[chunkPosition.getX()][chunkPosition.getY()];
+    }
+    
+    public void setApple(){
+        Position randomPos = Utils.randomPosition(xPixel, yPixel);
+        getPixel(randomPos).setState(Pixel.APPLE_STATE);
+        getGridChunk(Utils.getChunkByPixelPosition(randomPos)).setOneUpdatable();
     }
 
     Pixel getNextPixel(Position position, int direction) {
@@ -137,6 +158,7 @@ public class GridOfGrids extends JPanel{
         if (nextPixel.getState() == Pixel.SNAKE_STATE) {
             deleteTail(nextPixel.getPosition());
         }else{
+            this.getGridChunk(pixel.getChunkPosition()).setOneUpdatable();
             pixel.resetPixel();
         }
     }
@@ -148,8 +170,8 @@ public class GridOfGrids extends JPanel{
     Pixel getPixel(Position position) {
         int xChunk = (int)(position.getX()/16.0);
         int yChunk = (int)(position.getY()/16.0);
-        System.out.println(position + " xChunk " + xChunk + " yChunk" + yChunk);
-        System.out.println(gridOfGrids.length);
+//        System.out.println(position + " xChunk " + xChunk + " yChunk" + yChunk);
+//        System.out.println(gridOfGrids.length);
         return gridOfGrids[xChunk][yChunk].getPixel(position);
     }
 

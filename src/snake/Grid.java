@@ -16,6 +16,8 @@ import javax.swing.JPanel;
  */
 public class Grid extends JPanel{
 
+    private int updatable = 0;
+    
     private JPanel gridPanel;
     private Pixel[][] grid;
     
@@ -43,7 +45,7 @@ public class Grid extends JPanel{
     }
     
     public Pixel getPixel(Position position){
-        System.out.println("- " + xOffset);
+//        System.out.println("- " + xOffset);
         return grid[position.getX()-xOffset][position.getY()-yOffset];
     }
     public Pixel getPixel(int x, int y){
@@ -51,18 +53,41 @@ public class Grid extends JPanel{
     }
     
     private void initGrid(double pixelWidthSize) {
+        Position chunkPosition = new Position(xOffset/16, yOffset/16);
+//        System.out.println("::POS " + chunkPosition);
         for (int x = 0; x < grid.length; x++) {
             for (int y = 0; y < grid[x].length; y++) {
-                grid[x][y] = new Pixel(new Position(x+xOffset, y+yOffset), (int) pixelWidthSize);
+                grid[x][y] = new Pixel(
+                        new Position(x+xOffset, y+yOffset),
+                        chunkPosition, 
+                        (int) pixelWidthSize);
             }
         }
     }
     
-    public JPanel getTestPanel(){
-        JPanel ret = new JPanel(new GridLayout(x, y));
-        for (int width = 0; width < grid.length; width++) {
-            for (int height = 0; height < grid[width].length; height++) {
-                ret.add(getPixel(width, height).getPanel());
+    public JPanel getNonUpdatablePanel(){
+        JPanel ret = new JPanel(new GridLayout(16, 16));
+        for (int width = 0; width < 16; width++) {
+            for (int height = 0; height < 16; height++) {
+                if (width < grid.length && height < grid[width].length) {
+                    ret.add(getPixel(width, height).getNonUpdatablePanel());
+                }else{
+                    ret.add(new JLabel());
+                }
+            }
+        }
+        return ret;
+    }
+    
+    public JPanel getPanel(){
+        JPanel ret = new JPanel(new GridLayout(16, 16));
+        for (int width = 0; width < 16; width++) {
+            for (int height = 0; height < 16; height++) {
+                if (width < grid.length && height < grid[width].length) {
+                    ret.add(getPixel(width, height).getPanel());
+                }else{
+                    ret.add(new JLabel());
+                }
             }
         }
         return ret;
@@ -97,14 +122,12 @@ public class Grid extends JPanel{
     }
     
     public Pixel getPixelWithOffset(Position position, int xOffset, int yOffset){
-        System.out.println(xOffset + " , " + yOffset);
-        System.out.println("x: " + (position.getX() + xOffset) + " y: " + (position.getY() + yOffset));
+//        System.out.println(xOffset + " , " + yOffset);
+//        System.out.println("x: " + (position.getX() + xOffset) + " y: " + (position.getY() + yOffset));
         return getPixel(position.getX() + yOffset, position.getY() + xOffset);
     }
     
-    public void setApple(){
-        grid[(int)Utils.randomNumber(1, x - 1)][(int)Utils.randomNumber(1, y - 1)].setState(Pixel.APPLE_STATE);
-    }
+    
     
     public int getWidth() {
         return width;
@@ -129,5 +152,34 @@ public class Grid extends JPanel{
     public int getY() {
         return y;
     }
+
+    public int getUpdatable() {
+        return updatable;
+    }
+
+    public void setUpdatable(int updatable) {
+        this.updatable = updatable;
+    }
     
+    public void incrementUpdatable(){
+        updatable++;
+    }
+    
+    public void decrementUpdatable(){
+        updatable--;
+    }
+    
+    public boolean isUpdatable(){
+        return updatable != 0;
+    }
+
+    boolean isOneUpdate() {
+        return updatable < 0;
+    }
+    
+    void setOneUpdatable(){
+        if (updatable < 1) {
+            updatable = - 1;
+        }
+    }
 }

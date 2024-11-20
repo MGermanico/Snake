@@ -32,9 +32,12 @@ public class Pixel {
     
     private Position position;
     
+    Position chunkPosition;
+    
     int pixelSize;
 
-    public Pixel(Position position, int pixelSize) {
+    public Pixel(Position position, Position chunkPosition , int pixelSize) {
+        this.chunkPosition = chunkPosition;
         this.pixelSize = pixelSize;
         this.position = position;
     }
@@ -49,6 +52,18 @@ public class Pixel {
 
     public void setDirection(int direction) {
         this.direction = direction;
+    }
+    
+    public JPanel getNonUpdatablePanel(){
+        JPanel ret = new JPanel();
+        Dimension d = new Dimension(pixelSize, pixelSize);
+        ret.setPreferredSize(d);
+        if (state == SNAKE_STATE) {
+        }else if (state == APPLE_STATE) {
+        } else{
+            ret.setBackground(Color.blue);
+        }
+        return ret;
     }
     
     public JPanel getPanel(){
@@ -93,6 +108,22 @@ public class Pixel {
     public Position getPosition() {
         return position;
     }
+
+    public Position getChunkPosition() {
+        return chunkPosition;
+    }
     
-    
+    public static String positionToString(int position){
+        if (position == Pixel.DOWN_DIRECTION) {
+            return "DIRECTION{ABAJO    }";
+        }else if (position == Pixel.UP_DIRECTION) {
+            return "DIRECTION{ARRIBA   }";
+        }else if (position == Pixel.RIGHT_DIRECTION) {
+            return "DIRECTION{DERECHA  }";
+        }else if (position == Pixel.LEFT_DIRECTION) {
+            return "DIRECTION{IZQUIERDA}";
+        }else{
+            return "DIRECTION{ERROR    }";
+        }
+    }
 }

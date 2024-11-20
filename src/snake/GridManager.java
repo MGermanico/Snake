@@ -22,6 +22,8 @@ public class GridManager{
     
     int nextDirection;
     
+    int queueNextDirection = -1;
+    
     public GridManager(int x, int y, int diagonal) {
         gridOfGrids = new GridOfGrids(x, y, diagonal);
     }
@@ -39,13 +41,32 @@ public class GridManager{
         
         gridOfGrids.setApple();
         
+        gridOfGrids.updateAllPanels();
+        
+        moveSnake(true);
+        moveSnake(true);
+        moveSnake(true);
+        moveSnake(true);
+        moveSnake(true);
+        moveSnake(true);
+        moveSnake(true);
+        moveSnake(true);
+        moveSnake(true);
+        moveSnake(true);
+        
         Thread tickThread = new Thread(new Runnable() {
             @Override
             public void run() {
+                int i = 2;
                 while(true){
                     try {
-                        Thread.sleep(100L);
-                        tick();
+                        if (i == 2) {
+                            i = 0;
+                        }else{
+                            i++;
+                        }
+                        Thread.sleep(50L);
+                        tick(i);
                     } catch (InterruptedException ex) {
                         Logger.getLogger(GridManager.class.getName()).log(Level.SEVERE, null, ex);
                         break;
@@ -57,25 +78,48 @@ public class GridManager{
         tickThread.start();
     }
     
-    private void tick(){
+    private void tick(int tick){
+        if (tick == 1) {
+            moveSnake(false);
+        }else{
+//            moveSnake(true);
+        }
+    }
+    
+    private void moveSnake(boolean doBigger){
+        
+        
         Pixel nextPixel = gridOfGrids.getNextPixel(headPosition, nextDirection);
         nextPixel.setDirection(nextDirection);
-        
+        Position prvsHeadPosition = new Position(headPosition.getX(), headPosition.getY());
+        gridOfGrids.getGridChunk(nextPixel.getChunkPosition()).setOneUpdatable();
         if (nextPixel.getState() == Pixel.APPLE_STATE) {
             gridOfGrids.setApple();
-        }else{
-            gridOfGrids.deleteTail(headPosition);
+        }else if (!doBigger){
+            gridOfGrids.deleteTail(prvsHeadPosition);
         }
         gridOfGrids.paintPixel(nextPixel);
         headPosition = nextPixel.getPosition();
         gridOfGrids.updatePanels();
         gridOfGrids.revalidate();
+        
+        tryToReadQueueDirection();
     }
-    
+    private void tryToReadQueueDirection(){
+        if (queueNextDirection != -1) {
+            System.out.println(Pixel.positionToString(queueNextDirection));
+            if(setNextDirection(queueNextDirection)){
+                queueNextDirection = -1;
+            }
+        }
+    }
     private void spawnHead(){
         headPosition = getRandomHeadPosition();
-        gridOfGrids.getPixel(headPosition).setDirection(Pixel.randomDirection());
-        nextDirection = gridOfGrids.getPixel(headPosition).getDirection();
+        Pixel spawnPixel = gridOfGrids.getPixel(headPosition);
+        spawnPixel.setDirection(Pixel.randomDirection());
+        Position chunkPosition = spawnPixel.getChunkPosition();
+        gridOfGrids.getGridChunk(chunkPosition).incrementUpdatable();
+        nextDirection = spawnPixel.getDirection();
         gridOfGrids.paintPixel(headPosition);
         gridOfGrids.updatePanels();
         gridOfGrids.repaint();
@@ -94,14 +138,16 @@ public class GridManager{
             @Override
             public void keyTyped(KeyEvent e) {
                 char key = e.getKeyChar();
-                if (key == 'a' && nextDirection != Pixel.RIGHT_DIRECTION) {
-                    nextDirection = Pixel.LEFT_DIRECTION;
-                }else if (key == 'w' && nextDirection != Pixel.DOWN_DIRECTION) {
-                    nextDirection = Pixel.UP_DIRECTION;
-                }else if (key == 's' && nextDirection != Pixel.UP_DIRECTION) {
-                    nextDirection = Pixel.DOWN_DIRECTION;
-                }else if (key == 'd' && nextDirection != Pixel.LEFT_DIRECTION) {
-                    nextDirection = Pixel.RIGHT_DIRECTION;
+                
+//                System.out.println(Pixel.positionToString(prvsHeadOppositeDirection));
+                if (key == 'a') {
+                    setNextDirection(Pixel.LEFT_DIRECTION);
+                }else if (key == 'w') {
+                    setNextDirection(Pixel.UP_DIRECTION);
+                }else if (key == 's') {
+                    setNextDirection(Pixel.DOWN_DIRECTION);
+                }else if (key == 'd') {
+                    setNextDirection(Pixel.RIGHT_DIRECTION);
                 }
             }
 
@@ -114,5 +160,21 @@ public class GridManager{
             }
         };
     }
-    
+    public boolean setNextDirection(int direction){
+        int oppositeHeadDirection = gridOfGrids.getPixel(headPosition).getOppositeDirection();
+        Pixel prvsHeadPosition = gridOfGrids.getNextPixel(headPosition, oppositeHeadDirection);
+        int prvsHeadOppositeDirection = prvsHeadPosition.getOppositeDirection();
+        if (direction == Pixel.LEFT_DIRECTION || direction == Pixel.RIGHT_DIRECTION || direction == Pixel.DOWN_DIRECTION || direction == Pixel.UP_DIRECTION) {
+            if (prvsHeadOppositeDirection != direction) {
+                nextDirection = direction;
+                return true;
+            }else{
+                queueNextDirection = direction;
+                return false;
+            }
+        }else{
+            Logger.getLogger(GridManager.class.getName()).log(Level.SEVERE, null, new Exception());
+            return false;
+        }
+    }
 }
