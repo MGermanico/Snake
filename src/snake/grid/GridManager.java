@@ -2,8 +2,10 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package snake;
+package snake.grid;
 
+import snake.grid.SnakeManager;
+import snake.grid.GridOfGrids;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
@@ -18,7 +20,7 @@ import javax.swing.JPanel;
  */
 public class GridManager {
 
-    Thread gameThread;
+    LoopThread gameThread;
     
     GridOfGrids gridOfGrids;
 
@@ -53,61 +55,33 @@ public class GridManager {
     }
 
     public void startGame() {
-        gridOfGrids.reset();
-
-        spawnHeads();
-
-        gridOfGrids.setApple();
-
-        gridOfGrids.updateAllPanels();
-
-        initializeSizes();
-
-        gameThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                int i = 2;
-                while (true) {
-                    try {
-                        if (i == 2) {
-                            i = 0;
-                        } else {
-                            i++;
-                        }
-                        Thread.sleep(100L);
-                        tick(i);
-                    } catch (InterruptedException ex) {
-                        Logger.getLogger(GridManager.class.getName()).log(Level.SEVERE, null, ex);
-                        break;
-                    }
-
-                }
-            }
-        });
+        gameThread = new LoopThread(this);
         gameThread.start();
     }
 
-    private void tick(int tick) {
-        if (tick == 1) {
-            moveSnakes(false);
-        } else {
-            moveSnakes(true);
-        }
-        gridOfGrids.updatePanels();
-        gridOfGrids.revalidate();
-    }
-
-    private void spawnHeads() {
+    public void spawnHeads() {
         for (SnakeManager snakeManager : snakeManagerList) {
             snakeManager.spawnHead();
         }
+    }
+    
+    public void updateAllPanels(){
+        gridOfGrids.updateAllPanels();
+    }
+    
+    public void clearGrids(){
+        gridOfGrids.reset();
+    }
+    
+    public void setApple(){
+        gridOfGrids.setApple();
     }
 
     public GridOfGrids getGridOfGrids() {
         return gridOfGrids;
     }
 
-    ArrayList<KeyListener> getKeyListeners() {
+    public ArrayList<KeyListener> getKeyListeners() {
         ArrayList<KeyListener> keyListeners = new ArrayList<>();
         for (SnakeManager snakeManager : snakeManagerList) {
             keyListeners.add(snakeManager.getKeyListener());
@@ -115,18 +89,22 @@ public class GridManager {
         return keyListeners;
     }
 
-    private void initializeSizes() {
+    public void initializeSizes() {
         for (SnakeManager snakeManager : snakeManagerList) {
             snakeManager.setInitialSize(20);
         }
     }
+    
+    public void moveSnake(boolean doBigger, SnakeManager snakeManager){
+        snakeManager.moveSnake(doBigger);
+    }
 
-    private void moveSnakes(boolean doBigger) {
+    public void moveSnakes(boolean doBigger) {
         boolean anyAlive = false;
         for (SnakeManager snakeManager : snakeManagerList) {
             if (snakeManager.isAlive()) {
                 anyAlive = true;
-                snakeManager.moveSnake(doBigger);
+                moveSnake(doBigger, snakeManager);
             }
         }
         if (!anyAlive) {
@@ -135,7 +113,12 @@ public class GridManager {
     }
 
     private void endGame() {
-        gameThread.interrupt();
+        gameThread.endGame();
+    }
+
+    public void updateGridOfGrids() {
+        gridOfGrids.updatePanels();
+        gridOfGrids.revalidate();
     }
 
 }

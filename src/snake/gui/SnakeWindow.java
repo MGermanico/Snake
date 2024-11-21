@@ -2,8 +2,9 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package snake;
+package snake.gui;
 
+import snake.grid.GridManager;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.logging.Level;
@@ -20,7 +21,7 @@ public class SnakeWindow extends JPanel{
     GridManager gm;
     
     public SnakeWindow() {
-        GridManager gm = new GridManager(105, 105, 500, 2);
+        GridManager gm = new GridManager(105, 105, 200, 2);
         this.gm = gm;
         this.add(gm.getPanel());
         gm.startGame();

@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package snake;
+package snake.gui;
 
 import java.awt.HeadlessException;
 import java.awt.event.KeyListener;
@@ -35,6 +35,7 @@ public class PrincipalFrame extends JFrame{
         }else if(type == SETUP_SNAKE_GAME){
             SnakeWindow snakeWindow = new SnakeWindow();
             back.add(snakeWindow);
+            
             for (KeyListener keyListener : snakeWindow.getGm().getKeyListeners()) {
                 this.addKeyListener(keyListener);
             }
