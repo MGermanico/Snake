@@ -74,8 +74,8 @@ public class GridManager {
                         } else {
                             i++;
                         }
-                        Thread.sleep(20L);
-                        tick(1);
+                        Thread.sleep(100L);
+                        tick(i);
                     } catch (InterruptedException ex) {
                         Logger.getLogger(GridManager.class.getName()).log(Level.SEVERE, null, ex);
                         break;
@@ -89,9 +89,9 @@ public class GridManager {
 
     private void tick(int tick) {
         if (tick == 1) {
-            moveSnakes();
+            moveSnakes(false);
         } else {
-//            moveSnake(true);
+            moveSnakes(true);
         }
         gridOfGrids.updatePanels();
         gridOfGrids.revalidate();
@@ -117,16 +117,16 @@ public class GridManager {
 
     private void initializeSizes() {
         for (SnakeManager snakeManager : snakeManagerList) {
-            snakeManager.setInitialSize(15);
+            snakeManager.setInitialSize(20);
         }
     }
 
-    private void moveSnakes() {
+    private void moveSnakes(boolean doBigger) {
         boolean anyAlive = false;
         for (SnakeManager snakeManager : snakeManagerList) {
             if (snakeManager.isAlive()) {
                 anyAlive = true;
-                snakeManager.moveSnake(false);
+                snakeManager.moveSnake(doBigger);
             }
         }
         if (!anyAlive) {
