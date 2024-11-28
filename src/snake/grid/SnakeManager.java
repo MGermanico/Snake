@@ -14,12 +14,15 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import snake.grid.gridObjects.Player;
 
 /**
  *
  * @author migue
  */
 public class SnakeManager{
+    Player player;
+    
     private boolean alive = true;
     
     GridOfGrids gridOfGrids;
@@ -30,31 +33,38 @@ public class SnakeManager{
     
     int queueNextDirection = -1;
     
-    char keys[];
     
-    public SnakeManager(GridManager gridManager, char keys[]) {
+    public SnakeManager(GridManager gridManager, Player player) {
+        this.player = player;
         gridOfGrids = gridManager.getGridOfGrids();
-        this.keys = keys;
     }
     
     public void moveSnake(boolean doBigger){
         try{
             Pixel nextPixel = gridOfGrids.getNextPixel(headPosition, nextDirection);
-            nextPixel.setDirection(nextDirection);
-            Position prvsHeadPosition = new Position(headPosition.getX(), headPosition.getY());
-            gridOfGrids.getGridChunk(nextPixel.getChunkPosition()).setOneUpdatable();
-            if (nextPixel.getState() == Pixel.APPLE_STATE) {
-                gridOfGrids.setApple();
-            }else if (!doBigger){
-                gridOfGrids.deleteTail(prvsHeadPosition);
+            
+            if (!nextPixel.isAlreadyAnyOne()) {
+                moveHead(nextPixel, doBigger);
+            }else{
+                this.endLife();
             }
-            gridOfGrids.paintPixel(nextPixel);
-            headPosition = nextPixel.getPosition();
 
             tryToReadQueueDirection();
         }catch(Exception ex){
             endLife();
         }
+    }
+    private void moveHead(Pixel nextPixel, boolean doBigger){
+        nextPixel.setDirection(nextDirection);
+        Position prvsHeadPosition = new Position(headPosition.getX(), headPosition.getY());
+        gridOfGrids.getGridChunk(nextPixel.getChunkPosition()).setOneUpdatable();
+        if (nextPixel.getState() == Pixel.APPLE_STATE) {
+            gridOfGrids.setApple();
+        }else if (!doBigger){
+            gridOfGrids.deleteTail(prvsHeadPosition);
+        }
+        gridOfGrids.paintSnakePixel(nextPixel, player);
+        headPosition = nextPixel.getPosition();
     }
     private void tryToReadQueueDirection(){
         if (queueNextDirection != -1) {
@@ -74,7 +84,7 @@ public class SnakeManager{
         Position chunkPosition = spawnPixel.getChunkPosition();
         gridOfGrids.getGridChunk(chunkPosition).incrementUpdatable();
         nextDirection = spawnPixel.getDirection();
-        gridOfGrids.paintPixel(headPosition);
+        gridOfGrids.paintSnakePixel(headPosition, player);
         gridOfGrids.updatePanels();
         gridOfGrids.repaint();
     }
@@ -92,15 +102,13 @@ public class SnakeManager{
             @Override
             public void keyTyped(KeyEvent e) {
                 char key = e.getKeyChar();
-                System.out.println(key);
-//                System.out.println(Pixel.positionToString(prvsHeadOppositeDirection));
-                if (key == keys[0]) {
+                if (key == player.getKeys()[0]) {
                     setNextDirection(Pixel.LEFT_DIRECTION);
-                }else if (key == keys[1]) {
+                }else if (key == player.getKeys()[1]) {
                     setNextDirection(Pixel.UP_DIRECTION);
-                }else if (key == keys[2]) {
+                }else if (key == player.getKeys()[2]) {
                     setNextDirection(Pixel.DOWN_DIRECTION);
-                }else if (key == keys[3]) {
+                }else if (key == player.getKeys()[3]) {
                     setNextDirection(Pixel.RIGHT_DIRECTION);
                 }
             }
@@ -116,6 +124,7 @@ public class SnakeManager{
         };
     }
     public boolean setNextDirection(int direction){
+        System.out.println(Pixel.positionToString(direction));
         int oppositeHeadDirection = gridOfGrids.getPixel(headPosition).getOppositeDirection();
         Pixel prvsHeadPosition = gridOfGrids.getNextPixel(headPosition, oppositeHeadDirection);
         int prvsHeadOppositeDirection = prvsHeadPosition.getOppositeDirection();
@@ -143,6 +152,19 @@ public class SnakeManager{
 
     private void endLife() {
         alive = false;
+        Pixel headPixel = gridOfGrids.getPixel(headPosition);
+        
+        Pixel beforePixel = headPixel;
+        Position beforePosition;
+        int beforeOppositeDirection;
+        while(beforePixel.getPlayer() != null){
+            if (beforePixel.getPlayer().equals(headPixel.getPlayer())) {
+                beforePosition = beforePixel.getPosition();
+                beforeOppositeDirection = beforePixel.getOppositeDirection();
+                beforePixel.resetPixel();
+                beforePixel = gridOfGrids.getNextPixel(beforePosition, beforeOppositeDirection);
+            }
+        }
     }
 
     public boolean isAlive() {

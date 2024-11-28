@@ -31,7 +31,7 @@ public class LoopThread extends Thread{
 
         gridManager.initializeSizes();
         int i = 2;
-        while (true) {
+        while (!end) {
             try {
                 if (i == 2) {
                     i = 0;
@@ -40,9 +40,6 @@ public class LoopThread extends Thread{
                 }
                 Thread.sleep(20L);
                 tick(i);
-                if (end) {
-                    break;
-                }
             } catch (InterruptedException ex) {
                 Logger.getLogger(GridManager.class.getName()).log(Level.SEVERE, null, ex);
                 break;

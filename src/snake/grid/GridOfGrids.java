@@ -13,6 +13,7 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import snake.grid.gridObjects.Player;
 
 /**
  *
@@ -167,8 +168,8 @@ public class GridOfGrids extends JPanel{
         }
     }
 
-    void paintPixel(Pixel pixel) {
-        pixel.setState(Pixel.SNAKE_STATE);
+    public void paintSnakePixel(Pixel pixel, Player player) {
+        pixel.setSnake(player);
     }
 
     Pixel getPixel(Position position) {
@@ -179,8 +180,8 @@ public class GridOfGrids extends JPanel{
         return gridOfGrids[xChunk][yChunk].getPixel(position);
     }
 
-    void paintPixel(Position position) {
-        paintPixel(getPixel(position));
+    public void paintSnakePixel(Position position, Player player) {
+        paintSnakePixel(getPixel(position), player);
     }
 
     void reset() {

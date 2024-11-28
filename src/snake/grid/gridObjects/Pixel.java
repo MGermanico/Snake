@@ -21,13 +21,13 @@ public class Pixel {
     public static final int APPLE_STATE = 2;
     public static final int WALL_STATE = 3;
     
-    
-    
     public static final int NONE_DIRECTION = 0;
     public static final int UP_DIRECTION = 1;
     public static final int DOWN_DIRECTION = 2;
     public static final int RIGHT_DIRECTION = 3;
     public static final int LEFT_DIRECTION = 4;
+    
+    private Player player;
     
     private int state = OFF_STATE;
     
@@ -53,6 +53,11 @@ public class Pixel {
         this.state = state;
     }
 
+    public void setSnake(Player player){
+        this.state = SNAKE_STATE;
+        this.player = player;
+    }
+    
     public void setDirection(int direction) {
         this.direction = direction;
     }
@@ -73,13 +78,26 @@ public class Pixel {
         JPanel ret = new JPanel();
         Dimension d = new Dimension(pixelSize, pixelSize);
         ret.setPreferredSize(d);
-        if (state == SNAKE_STATE) {
-            ret.setBackground(Color.BLACK);
-        }else if (state == APPLE_STATE) {
-            ret.setBackground(Color.GREEN);
-        } else{
+        if (direction == NONE_DIRECTION) {
             ret.setBackground(Color.WHITE);
+        }else if (direction == UP_DIRECTION) {
+            ret.setBackground(Color.GREEN);
+        }else if (direction == DOWN_DIRECTION) {
+            ret.setBackground(Color.BLUE);
+        }else if (direction == RIGHT_DIRECTION) {
+            ret.setBackground(Color.PINK);
+        }else if (direction == LEFT_DIRECTION) {
+            ret.setBackground(Color.MAGENTA);
+        }else{
+            ret.setBackground(Color.RED);
         }
+//        if (state == SNAKE_STATE) {
+//            ret.setBackground(player.getColor());
+//        }else if (state == APPLE_STATE) {
+//            ret.setBackground(Color.GREEN);
+//        } else{
+//            ret.setBackground(Color.WHITE);
+//        }
         return ret;
     }
     
@@ -88,6 +106,7 @@ public class Pixel {
     }
     
     public void resetPixel(){
+        this.player = null;
         this.setState(Pixel.OFF_STATE);
         this.setDirection(Pixel.NONE_DIRECTION);
     }
@@ -116,6 +135,8 @@ public class Pixel {
         return chunkPosition;
     }
     
+    
+    
     public static String positionToString(int position){
         if (position == Pixel.DOWN_DIRECTION) {
             return "DIRECTION{ABAJO    }";
@@ -129,4 +150,23 @@ public class Pixel {
             return "DIRECTION{ERROR    }";
         }
     }
+    
+    public boolean isAlreadyAnyOne(){
+        return direction != NONE_DIRECTION;
+    }
+
+    public Player getPlayer() {
+        return player;
+    }
+
+    public void setPlayer(Player player) {
+        this.player = player;
+    }
+
+    @Override
+    public String toString() {
+        return "Pixel{" + "player=" + player + ", state=" + state + ", direction=" + direction + ", position=" + position + ", chunkPosition=" + chunkPosition + ", pixelSize=" + pixelSize + '}';
+    }
+    
+    
 }

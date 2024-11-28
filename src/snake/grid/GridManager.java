@@ -4,6 +4,7 @@
  */
 package snake.grid;
 
+import java.awt.Color;
 import snake.grid.SnakeManager;
 import snake.grid.GridOfGrids;
 import java.awt.event.KeyEvent;
@@ -13,6 +14,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import snake.grid.gridObjects.Player;
 
 /**
  *
@@ -29,21 +31,25 @@ public class GridManager {
     public GridManager(int x, int y, int diagonal, int nPlayers) {
         gridOfGrids = new GridOfGrids(x, y, diagonal);
         SnakeManager actualSnakeManager;
+        Player actualPlayer;
         char[] keys;
         for (int i = 0; i < nPlayers; i++) {
+            
             keys = new char[4];
             if (i == 0) {
                 keys[0] = 'a';
                 keys[1] = 'w';
                 keys[2] = 's';
                 keys[3] = 'd';
+                actualPlayer = new Player(Color.RED, keys);
             } else {
                 keys[0] = 'j';
                 keys[1] = 'i';
                 keys[2] = 'k';
                 keys[3] = 'l';
+                actualPlayer = new Player(Color.BLACK, keys);
             }
-            actualSnakeManager = new SnakeManager(this, keys);
+            actualSnakeManager = new SnakeManager(this, actualPlayer);
             snakeManagerList.add(actualSnakeManager);
         }
     }
@@ -91,7 +97,7 @@ public class GridManager {
 
     public void initializeSizes() {
         for (SnakeManager snakeManager : snakeManagerList) {
-            snakeManager.setInitialSize(20);
+            snakeManager.setInitialSize(10);
         }
     }
     

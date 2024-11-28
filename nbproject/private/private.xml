@@ -3,14 +3,15 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/home/tarde/git/Snake/src/snake/Pixel.java</file>
-            <file>file:/home/tarde/git/Snake/src/snake/Exec.java</file>
-            <file>file:/home/tarde/git/Snake/src/snake/GridManager.java</file>
-            <file>file:/home/tarde/git/Snake/src/snake/GridOfGrids.java</file>
-            <file>file:/home/tarde/git/Snake/src/snake/SnakeManager.java</file>
-            <file>file:/home/tarde/git/Snake/src/snake/Grid.java</file>
-            <file>file:/home/tarde/git/Snake/src/snake/SnakeWindow.java</file>
-            <file>file:/home/tarde/git/Snake/src/snake/PrincipalFrame.java</file>
+            <file>file:/home/tarde/git/Snake/src/snake/grid/LoopThread.java</file>
+            <file>file:/home/tarde/git/Snake/src/snake/grid/gridObjects/Pixel.java</file>
+            <file>file:/home/tarde/git/Snake/src/snake/grid/GridManager.java</file>
+            <file>file:/home/tarde/git/Snake/src/snake/grid/GridOfGrids.java</file>
+            <file>file:/home/tarde/git/Snake/src/snake/execs/Exec.java</file>
+            <file>file:/home/tarde/git/Snake/src/snake/gui/SnakeWindow.java</file>
+            <file>file:/home/tarde/git/Snake/src/snake/gui/PrincipalFrame.java</file>
+            <file>file:/home/tarde/git/Snake/src/snake/grid/SnakeManager.java</file>
+            <file>file:/home/tarde/git/Snake/src/snake/grid/gridObjects/Player.java</file>
         </group>
     </open-files>
 </project-private>
