@@ -10,11 +10,14 @@ import snake.grid.GridOfGrids;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import snake.grid.gridObjects.Player;
+import snake.grid.gridObjects.Position;
 
 /**
  *
@@ -97,7 +100,7 @@ public class GridManager {
 
     public void initializeSizes() {
         for (SnakeManager snakeManager : snakeManagerList) {
-            snakeManager.setInitialSize(10);
+            snakeManager.setInitialSize(5);
         }
     }
     
@@ -118,13 +121,23 @@ public class GridManager {
         }
     }
 
-    private void endGame() {
+    public void endGame() {
         gameThread.endGame();
     }
 
     public void updateGridOfGrids() {
         gridOfGrids.updatePanels();
         gridOfGrids.revalidate();
+    }
+    
+    public Set<Position> getHeadsPositions(){
+        HashSet<Position> headsPositions = new HashSet<>();
+        for (SnakeManager snakeManager : snakeManagerList) {
+            if (snakeManager.headPosition != null) {
+                headsPositions.add(snakeManager.headPosition);
+            }
+        }
+        return headsPositions;
     }
 
 }

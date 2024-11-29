@@ -25,9 +25,9 @@ public class SnakeManager{
     
     private boolean alive = true;
     
-    GridOfGrids gridOfGrids;
+    GridManager gridManager;
 
-    Position headPosition;
+    Position headPosition = null;
     
     int nextDirection;
     
@@ -36,12 +36,12 @@ public class SnakeManager{
     
     public SnakeManager(GridManager gridManager, Player player) {
         this.player = player;
-        gridOfGrids = gridManager.getGridOfGrids();
+        this.gridManager = gridManager;
     }
     
     public void moveSnake(boolean doBigger){
         try{
-            Pixel nextPixel = gridOfGrids.getNextPixel(headPosition, nextDirection);
+            Pixel nextPixel = gridManager.getGridOfGrids().getNextPixel(headPosition, nextDirection);
             
             if (!nextPixel.isAlreadyAnyOne()) {
                 moveHead(nextPixel, doBigger);
@@ -56,14 +56,15 @@ public class SnakeManager{
     }
     private void moveHead(Pixel nextPixel, boolean doBigger){
         nextPixel.setDirection(nextDirection);
+        
         Position prvsHeadPosition = new Position(headPosition.getX(), headPosition.getY());
-        gridOfGrids.getGridChunk(nextPixel.getChunkPosition()).setOneUpdatable();
+        gridManager.getGridOfGrids().getGridChunk(nextPixel.getChunkPosition()).setOneUpdatable();
         if (nextPixel.getState() == Pixel.APPLE_STATE) {
-            gridOfGrids.setApple();
+            gridManager.getGridOfGrids().setApple();
         }else if (!doBigger){
-            gridOfGrids.deleteTail(prvsHeadPosition);
+            gridManager.getGridOfGrids().deleteTail(prvsHeadPosition);
         }
-        gridOfGrids.paintSnakePixel(nextPixel, player);
+        gridManager.getGridOfGrids().paintSnakePixel(nextPixel, player);
         headPosition = nextPixel.getPosition();
     }
     private void tryToReadQueueDirection(){
@@ -79,21 +80,40 @@ public class SnakeManager{
     }
     public void spawnHead(){
         headPosition = getRandomHeadPosition();
-        Pixel spawnPixel = gridOfGrids.getPixel(headPosition);
-        spawnPixel.setDirection(Pixel.randomDirection());
+        Pixel spawnPixel = gridManager.getGridOfGrids().getPixel(headPosition);
+        int headDirection = getHeadDirection(headPosition);
+        spawnPixel.setDirection(headDirection);
         Position chunkPosition = spawnPixel.getChunkPosition();
-        gridOfGrids.getGridChunk(chunkPosition).incrementUpdatable();
+        gridManager.getGridOfGrids().getGridChunk(chunkPosition).incrementUpdatable();
         nextDirection = spawnPixel.getDirection();
-        gridOfGrids.paintSnakePixel(headPosition, player);
-        gridOfGrids.updatePanels();
-        gridOfGrids.repaint();
+        gridManager.getGridOfGrids().paintSnakePixel(headPosition, player);
+        gridManager.getGridOfGrids().updatePanels();
+        gridManager.getGridOfGrids().repaint();
+    }
+    
+    private int getHeadDirection(Position headPosition){
+        if (headPosition.getX() > gridManager.getGridOfGrids().xPixel*1.0/2) {
+//            System.out.println("izq");
+            return Pixel.LEFT_DIRECTION;
+        }else{
+//            System.out.println("der");
+            return Pixel.RIGHT_DIRECTION;
+        }
     }
 
     private Position getRandomHeadPosition() {
-        int secureXDistance = (int)(gridOfGrids.xPixel*1.0/4);
-        int secureYDistance = (int)(gridOfGrids.yPixel*1.0/4);
-        int x = (int) Utils.randomNumber(secureXDistance, gridOfGrids.xPixel - secureXDistance);
-        int y = (int) Utils.randomNumber(secureYDistance, gridOfGrids.yPixel - secureYDistance);
+        int secureXDistance = (int)(gridManager.getGridOfGrids().xPixel*1.0/5);
+        int secureYDistance = (int)(gridManager.getGridOfGrids().yPixel*1.0/3);
+        boolean gotX;
+        int x;
+        int y = (int) Utils.randomNumber(secureYDistance, gridManager.getGridOfGrids().yPixel - secureYDistance);
+        do {
+            gotX = false;
+            x = (int) Utils.randomNumber(secureXDistance, gridManager.getGridOfGrids().xPixel - secureXDistance);
+            for (Position headsPosition : gridManager.getHeadsPositions()) {
+                if(Utils.distance(x, headsPosition.getX()) < 3)gotX = true;
+            }
+        } while (gotX);
         return new Position(x, y);
     }
     
@@ -125,8 +145,8 @@ public class SnakeManager{
     }
     public boolean setNextDirection(int direction){
         System.out.println(Pixel.positionToString(direction));
-        int oppositeHeadDirection = gridOfGrids.getPixel(headPosition).getOppositeDirection();
-        Pixel prvsHeadPosition = gridOfGrids.getNextPixel(headPosition, oppositeHeadDirection);
+        int oppositeHeadDirection = gridManager.getGridOfGrids().getPixel(headPosition).getOppositeDirection();
+        Pixel prvsHeadPosition = gridManager.getGridOfGrids().getNextPixel(headPosition, oppositeHeadDirection);
         int prvsHeadOppositeDirection = prvsHeadPosition.getOppositeDirection();
         if (direction == Pixel.LEFT_DIRECTION || direction == Pixel.RIGHT_DIRECTION || direction == Pixel.DOWN_DIRECTION || direction == Pixel.UP_DIRECTION) {
             System.out.println("prvsHoppos: " + Pixel.positionToString(prvsHeadOppositeDirection));
@@ -152,23 +172,30 @@ public class SnakeManager{
 
     private void endLife() {
         alive = false;
-        Pixel headPixel = gridOfGrids.getPixel(headPosition);
         
-        Pixel beforePixel = headPixel;
-        Position beforePosition;
-        int beforeOppositeDirection;
-        while(beforePixel.getPlayer() != null){
-            if (beforePixel.getPlayer().equals(headPixel.getPlayer())) {
-                beforePosition = beforePixel.getPosition();
-                beforeOppositeDirection = beforePixel.getOppositeDirection();
-                beforePixel.resetPixel();
-                beforePixel = gridOfGrids.getNextPixel(beforePosition, beforeOppositeDirection);
-            }
-        }
+        deleteSnake();
     }
 
     public boolean isAlive() {
         return alive;
+    }
+
+    private void deleteSnake() {
+        Pixel beforePixel = gridManager.getGridOfGrids().getPixel(headPosition);
+        Player myPlayer = beforePixel.getPlayer();
+        
+        Position beforePosition;
+        int beforeOppositeDirection;
+        while(beforePixel.getPlayer() != null){
+            if (beforePixel.getPlayer().equals(myPlayer)) {
+                beforePosition = beforePixel.getPosition();
+                beforeOppositeDirection = beforePixel.getOppositeDirection();
+                beforePixel.resetPixel();
+                gridManager.getGridOfGrids().getGridChunk(beforePixel.getChunkPosition()).setOneUpdatable();
+                
+                beforePixel = gridManager.getGridOfGrids().getNextPixel(beforePosition, beforeOppositeDirection);
+            }
+        }
     }
     
     

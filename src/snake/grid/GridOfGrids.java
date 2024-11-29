@@ -138,9 +138,18 @@ public class GridOfGrids extends JPanel{
     }
     
     public void setApple(){
-        Position randomPos = Utils.randomPosition(xPixel, yPixel);
-        getPixel(randomPos).setState(Pixel.APPLE_STATE);
-        getGridChunk(Utils.getChunkByPixelPosition(randomPos)).setOneUpdatable();
+        Position randomPos;
+        Pixel applePixel;
+        boolean correctPosition = true;
+        do {
+            randomPos = Utils.randomPosition(xPixel, yPixel);
+            applePixel = getPixel(randomPos);
+            if (applePixel.getState() == Pixel.OFF_STATE) {
+                correctPosition = false;
+                applePixel.setState(Pixel.APPLE_STATE);
+                getGridChunk(Utils.getChunkByPixelPosition(randomPos)).setOneUpdatable();
+            }
+        } while (correctPosition);
     }
 
     Pixel getNextPixel(Position position, int direction) {

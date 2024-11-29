@@ -4,6 +4,7 @@
  */
 package snake.grid;
 
+import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -27,10 +28,12 @@ public class LoopThread extends Thread{
 
         gridManager.setApple();
 
-        gridManager.updateAllPanels();
-
         gridManager.initializeSizes();
+        
+        gridManager.updateAllPanels();
+        
         int i = 2;
+        
         while (!end) {
             try {
                 if (i == 2) {

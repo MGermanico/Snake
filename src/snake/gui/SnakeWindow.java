@@ -20,8 +20,8 @@ public class SnakeWindow extends JPanel{
     
     GridManager gm;
     
-    public SnakeWindow() {
-        GridManager gm = new GridManager(105, 105, 200, 2);
+    public SnakeWindow(Options options) {
+        GridManager gm = new GridManager(55, 55, 200, 1);
         this.gm = gm;
         this.add(gm.getPanel());
         gm.startGame();

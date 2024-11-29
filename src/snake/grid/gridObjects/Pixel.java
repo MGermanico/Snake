@@ -78,26 +78,47 @@ public class Pixel {
         JPanel ret = new JPanel();
         Dimension d = new Dimension(pixelSize, pixelSize);
         ret.setPreferredSize(d);
-        if (direction == NONE_DIRECTION) {
-            ret.setBackground(Color.WHITE);
-        }else if (direction == UP_DIRECTION) {
-            ret.setBackground(Color.GREEN);
-        }else if (direction == DOWN_DIRECTION) {
-            ret.setBackground(Color.BLUE);
-        }else if (direction == RIGHT_DIRECTION) {
-            ret.setBackground(Color.PINK);
-        }else if (direction == LEFT_DIRECTION) {
-            ret.setBackground(Color.MAGENTA);
-        }else{
-            ret.setBackground(Color.RED);
-        }
-//        if (state == SNAKE_STATE) {
-//            ret.setBackground(player.getColor());
-//        }else if (state == APPLE_STATE) {
-//            ret.setBackground(Color.GREEN);
-//        } else{
-//            ret.setBackground(Color.WHITE);
+//        if (chunkPosition.getX() == 0 && chunkPosition.getY() == 0) {
+//            if (position.getX() % 2 == 0) {
+//                if (position.getY() % 2 == 0) {
+//                    ret.setBackground(Color.WHITE);
+//                }else{
+//                    ret.setBackground(Color.GRAY);
+//                }
+//            }else{
+//                if (position.getY() % 2 == 0) {
+//                    ret.setBackground(Color.DARK_GRAY);
+//                }else{
+//                    ret.setBackground(Color.LIGHT_GRAY);
+//                }
+//            }
+//        }else{
+//            if (getPosition().getX()% 16 == 0 || getPosition().getY()%16 == 0) {
+//                ret.setBackground(Color.BLACK);
+//            }else{
+//                ret.setBackground(Color.red);
+//            }
 //        }
+//        if (direction == NONE_DIRECTION) {
+//            ret.setBackground(Color.WHITE);
+//        }else if (direction == UP_DIRECTION) {
+//            ret.setBackground(Color.GREEN);
+//        }else if (direction == DOWN_DIRECTION) {
+//            ret.setBackground(Color.BLUE);
+//        }else if (direction == RIGHT_DIRECTION) {
+//            ret.setBackground(Color.PINK);
+//        }else if (direction == LEFT_DIRECTION) {
+//            ret.setBackground(Color.MAGENTA);
+//        }else{
+//            ret.setBackground(Color.RED);
+//        }
+        if (state == SNAKE_STATE) {
+            ret.setBackground(player.getColor());
+        }else if (state == APPLE_STATE) {
+            ret.setBackground(Color.GREEN);
+        } else{
+            ret.setBackground(Color.WHITE);
+        }
         return ret;
     }
     

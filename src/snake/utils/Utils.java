@@ -26,4 +26,10 @@ public class Utils {
     public static Position getChunkByPixelPosition(Position pixelPos){
         return new Position(getChunkByPixelX(pixelPos.getX()), getChunkByPixelY(pixelPos.getY()));
     }
+    public static int distance(int n1, int n2){
+        return Math.abs(n2 - n1);
+    }
+    public static double distance(double n1, double n2){
+        return Math.abs(n2 - n1);
+    }
 }
