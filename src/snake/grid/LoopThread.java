@@ -41,7 +41,7 @@ public class LoopThread extends Thread{
                 } else {
                     i++;
                 }
-                Thread.sleep(20L);
+                Thread.sleep(40L);
                 tick(i);
             } catch (InterruptedException ex) {
                 Logger.getLogger(GridManager.class.getName()).log(Level.SEVERE, null, ex);

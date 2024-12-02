@@ -4,8 +4,12 @@
  */
 package snake.gui;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.Box;
+import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.event.ChangeEvent;
@@ -21,41 +25,33 @@ public class IndividualOptionPanel extends JPanel{
     Options options = new Options();
     PrincipalFrame owner;
     
+    Box verticalBox = Box.createVerticalBox();
     JPanel back = new JPanel();
     JPanel exampleBack = new JPanel();
     
     JSpinner xSizeSpinner = new JSpinner();
+    JSpinner ySizeSpinner = new JSpinner();
+    JSpinner dSizeSpinner = new JSpinner();
+    
+    JButton acceptButton = new JButton("Aceptar");
     
     public IndividualOptionPanel(PrincipalFrame owner) {
         this.owner = owner;
         startSpinners();
+        startButtons();
         back.add(exampleBack);
-        this.add(back);
+        verticalBox.add(back);
+        this.add(verticalBox);
         updateExample();
-        Thread hilo = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while(true){
-                    try {
-                        owner.validate();
-                        owner.revalidate();
-                        owner.repaint();
-                        Thread.sleep(200);
-                    } catch (InterruptedException ex) {
-                        Logger.getLogger(IndividualOptionPanel.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                }
-            }
-        });
-        hilo.start();
     }
 
-    private void updateExample() {
+    public void updateExample() {
         exampleBack.removeAll();
         GridManager exampleGrid = new GridManager(options.getxPixelSize(), options.getyPixelSize(), options.getDiagonalSize(), 0);
-        exampleGrid.startGame();
-        exampleGrid.endGame();
-        exampleBack.add(exampleGrid.getPanel());
+        exampleBack.add(exampleGrid.getSizePanel());
+        owner.validate();
+        owner.revalidate();
+        owner.repaint();
     }
 
     private void startSpinners() {
@@ -68,6 +64,36 @@ public class IndividualOptionPanel extends JPanel{
                 updateExample();
             }
         });
+        
+        ySizeSpinner.setValue(options.getyPixelSize());
+        back.add(ySizeSpinner);
+        ySizeSpinner.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                ySizeSpinner.setValue(options.setyPixelSize((int) ySizeSpinner.getValue()));
+                updateExample();
+            }
+        });
+        
+        dSizeSpinner.setValue(options.getDiagonalSize());
+        back.add(dSizeSpinner);
+        dSizeSpinner.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                dSizeSpinner.setValue(options.setDiagonalSize((int) dSizeSpinner.getValue()));
+                updateExample();
+            }
+        });
+    }
+
+    private void startButtons() {
+        acceptButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                owner.setUp(PrincipalFrame.SETUP_SNAKE_GAME, options);
+            }
+        });
+        verticalBox.add(acceptButton);
     }
     
     

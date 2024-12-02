@@ -6,6 +6,7 @@ package snake.grid.gridObjects;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.PopupMenu;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import snake.utils.Utils;
@@ -79,19 +80,7 @@ public class Pixel {
         Dimension d = new Dimension(pixelSize, pixelSize);
         ret.setPreferredSize(d);
 //        if (chunkPosition.getX() == 0 && chunkPosition.getY() == 0) {
-//            if (position.getX() % 2 == 0) {
-//                if (position.getY() % 2 == 0) {
-//                    ret.setBackground(Color.WHITE);
-//                }else{
-//                    ret.setBackground(Color.GRAY);
-//                }
-//            }else{
-//                if (position.getY() % 2 == 0) {
-//                    ret.setBackground(Color.DARK_GRAY);
-//                }else{
-//                    ret.setBackground(Color.LIGHT_GRAY);
-//                }
-//            }
+//            
 //        }else{
 //            if (getPosition().getX()% 16 == 0 || getPosition().getY()%16 == 0) {
 //                ret.setBackground(Color.BLACK);
@@ -187,6 +176,26 @@ public class Pixel {
     @Override
     public String toString() {
         return "Pixel{" + "player=" + player + ", state=" + state + ", direction=" + direction + ", position=" + position + ", chunkPosition=" + chunkPosition + ", pixelSize=" + pixelSize + '}';
+    }
+
+    public JPanel getSizePanel() {
+        JPanel ret = new JPanel();
+        Dimension d = new Dimension(pixelSize, pixelSize);
+        ret.setPreferredSize(d);
+        if (position.getX() % 2 == 0) {
+                if (position.getY() % 2 == 0) {
+                    ret.setBackground(Color.WHITE);
+                }else{
+                    ret.setBackground(Color.GRAY);
+                }
+            }else{
+                if (position.getY() % 2 == 0) {
+                    ret.setBackground(Color.DARK_GRAY);
+                }else{
+                    ret.setBackground(Color.LIGHT_GRAY);
+                }
+            }
+        return ret;
     }
     
     

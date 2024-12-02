@@ -7,6 +7,7 @@ package snake.grid;
 import snake.grid.gridObjects.Position;
 import snake.grid.gridObjects.Pixel;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import javax.swing.JLabel;
@@ -183,5 +184,19 @@ public class Grid extends JPanel{
         if (updatable < 1) {
             updatable = - 1;
         }
+    }
+
+    public JPanel getSizePanel(){
+        JPanel ret = new JPanel(new GridLayout(16, 16));
+        for (int width = 0; width < 16; width++) {
+            for (int height = 0; height < 16; height++) {
+                if (width < grid.length && height < grid[width].length) {
+                    ret.add(getPixel(width, height).getSizePanel());
+                }else{
+                    ret.add(new JLabel(""));
+                }
+            }
+        }
+        return ret;
     }
 }

@@ -23,7 +23,7 @@ public class MenuPanel extends JPanel{
         nuevaPartidaIndividual.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                owner.setUp(PrincipalFrame.SETUP_SNAKE_GAME);
+                owner.setUp(PrincipalFrame.SETUP_INDIVIDUAL_OPTIONS);
             }
         });
         this.add(nuevaPartidaIndividual);
@@ -32,7 +32,7 @@ public class MenuPanel extends JPanel{
         nuevaPartidaMultijugador.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                owner.setUp(PrincipalFrame.SETUP_SNAKE_GAME);
+                owner.setUp(PrincipalFrame.SETUP_MULTIPLAYER_OPTIONS);
             }
         });
         this.add(nuevaPartidaMultijugador);

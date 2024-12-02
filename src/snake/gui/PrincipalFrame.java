@@ -27,10 +27,10 @@ public class PrincipalFrame extends JFrame{
         this.setBounds(0, 0, 1000, 1000);
         this.setVisible(true);
         back = new JPanel();
-        Options op = new Options();
-        setUp(SETUP_SNAKE_GAME, op);
-//        setUp(SETUP_INDIVIDUAL_OPTIONS);
         this.add(back);
+        Options op = new Options();
+//        setUp(SETUP_SNAKE_GAME, op);
+        setUp(SETUP_MENU);
         
     }
 
@@ -49,6 +49,7 @@ public class PrincipalFrame extends JFrame{
         }else if (type == SETUP_INDIVIDUAL_OPTIONS) {
             IndividualOptionPanel indivOptionPanel = new IndividualOptionPanel(this);
             back.add(indivOptionPanel);
+            indivOptionPanel.updateExample();
         }else if (type == SETUP_MULTIPLAYER_OPTIONS) {
             
         }

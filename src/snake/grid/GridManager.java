@@ -31,8 +31,8 @@ public class GridManager {
 
     ArrayList<SnakeManager> snakeManagerList = new ArrayList<>();
 
-    public GridManager(int x, int y, int diagonal, int nPlayers) {
-        gridOfGrids = new GridOfGrids(x, y, diagonal);
+    public GridManager(int x, int y, int area, int nPlayers) {
+        gridOfGrids = new GridOfGrids(x, y, area);
         SnakeManager actualSnakeManager;
         Player actualPlayer;
         char[] keys;
@@ -55,6 +55,12 @@ public class GridManager {
             actualSnakeManager = new SnakeManager(this, actualPlayer);
             snakeManagerList.add(actualSnakeManager);
         }
+    }
+    
+    public JPanel getSizePanel(){
+        gridOfGrids.updateSizePanels();
+        gridOfGrids.revalidate();
+        return gridOfGrids;
     }
 
     public JPanel getPanel() {

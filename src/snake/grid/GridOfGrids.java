@@ -85,26 +85,19 @@ public class GridOfGrids extends JPanel{
         }
     }
     
-    private double getPixelSize(int d) {
-        double alfa = Math.atan(yPixel*1.0/xPixel);
-        double h = Math.sin(alfa);
-        double ret = (d*h)/yPixel;
-//        System.out.println("x: " + xPixel + " , y: " + yPixel + " , d: " + d);
-//        System.out.printf("\n"
-//                + "%d*sin(atan(%d/%d))/%d"
-//                + "\n\n",d, yPixel, xPixel, yPixel);
-//        System.out.println(alfa);
-//        System.out.println(h);
-//        System.out.println(ret);
-        return ret+5;
+    private double getPixelSize(int a) {
+        System.out.println(Math.sqrt(a*1000.0/(xPixel*yPixel)));
+        return Math.sqrt(a*1000.0/(xPixel*yPixel));
     }
     public void updateAllPanels(){
         int i = 0;
         for (Grid[] gridOfGrid : gridOfGrids) {
             for (Grid grid : gridOfGrid) {
-                gridOfGridsPanel.remove(i);
-                gridOfGridsPanel.add(grid.getPanel(), i);
-                i++;
+                if (gridOfGridsPanel.getComponentCount() > i) {
+                    gridOfGridsPanel.remove(i);
+                    gridOfGridsPanel.add(grid.getPanel(), i);
+                    i++;
+                }
             }
         }
     }
@@ -197,6 +190,24 @@ public class GridOfGrids extends JPanel{
         for (Grid[] gridOfGrid : gridOfGrids) {
             for (Grid grid : gridOfGrid) {
                 grid.reset();
+            }
+        }
+    }
+
+    void updateSizePanels() {
+        int i = 0;
+        JPanel panelNoUp;
+        for (Grid[] gridOfGrid : gridOfGrids) {
+            for (Grid grid : gridOfGrid) {
+//                    System.out.println("update");
+                    gridOfGridsPanel.remove(i);
+                    gridOfGridsPanel.add(grid.getSizePanel(), i);
+                    if (grid.isOneUpdate()) {
+//                        System.out.println("last update");
+                        grid.incrementUpdatable();
+                    }
+                
+                i++;
             }
         }
     }
