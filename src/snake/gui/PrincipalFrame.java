@@ -27,7 +27,9 @@ public class PrincipalFrame extends JFrame{
         this.setBounds(0, 0, 1000, 1000);
         this.setVisible(true);
         back = new JPanel();
-        setUp(SETUP_INDIVIDUAL_OPTIONS);
+        Options op = new Options();
+        setUp(SETUP_SNAKE_GAME, op);
+//        setUp(SETUP_INDIVIDUAL_OPTIONS);
         this.add(back);
         
     }
