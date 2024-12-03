@@ -8,6 +8,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.Box;
@@ -27,7 +28,7 @@ import snake.grid.gridObjects.Player;
  *
  * @author tarde
  */
-public class IndividualOptionPanel extends JPanel{
+public class MultiplayerOptionPanel extends JPanel{
 
     private Options options = new Options();
     private PrincipalFrame owner;
@@ -45,10 +46,11 @@ public class IndividualOptionPanel extends JPanel{
     
     private JButton acceptButton = new JButton("Aceptar");
     private JButton cancelButton = new JButton("Cancelar");
-    private JButton keysButton = new JButton("Teclas (a,w,s,d)");
-    private JButton colorButton = new JButton();
+    private ArrayList<JButton> keysButtons = new ArrayList<>();
+    private ArrayList<JButton> colorButtons = new ArrayList<>();
+    private JButton addPlayerButton = new JButton("Añadir jugador");
     
-    public IndividualOptionPanel(PrincipalFrame owner) {
+    public MultiplayerOptionPanel(PrincipalFrame owner) {
         options.addPlayers(new Player());
         this.owner = owner;
         startSpinners();
@@ -56,18 +58,62 @@ public class IndividualOptionPanel extends JPanel{
         setUpComponents();
         updateExample();
     }
-
+    
     private void setUpComponents(){
         JPanel horizontal;
-        JLabel text;
+        
+        playerOptionsBox.removeAll();
+        back.removeAll();
+        verticalBox.removeAll();
+        
+        playerOptionsBox.add(getGeneralOptionsTextPanel());
+        
+        playerOptionsBox.add(getFirstGeneralOptionsPanel());
+        
+        playerOptionsBox.add(getSecondGeneralOptionsPanel());
+        
+        playerOptionsBox.add(Box.createVerticalStrut(50));
+        
+        playerOptionsBox.add(getPlayerOptionsTextPanel());
+        
+        for (int i = 0; i < options.getPlayers().size(); i++) {
+            playerOptionsBox.add(getIndividualPlayerPanel(i));
+        }
+        
+        playerOptionsBox.add(Box.createVerticalStrut(20));
         
         horizontal = new JPanel();
-        text = new JLabel("Opciones Generales");
-        text.setFont(new java.awt.Font("Liberation Sans", 1, 24));
-        horizontal.add(text);
+        horizontal.add(addPlayerButton);
         playerOptionsBox.add(horizontal);
         
+        back.add(playerOptionsBox);
+        back.add(exampleBack);
+        
         horizontal = new JPanel();
+        horizontal.add(acceptButton);
+        horizontal.add(cancelButton);
+        verticalBox.add(horizontal);
+        verticalBox.add(back);
+        this.add(verticalBox);
+    }
+    
+    private JPanel getGeneralOptionsTextPanel(){
+        JPanel horizontal = new JPanel();
+        JLabel text = new JLabel("Opciones Generales");
+        text.setFont(new java.awt.Font("Liberation Sans", 1, 24));
+        horizontal.add(text);
+        return horizontal;
+    }
+    
+    private JPanel getSecondGeneralOptionsPanel(){
+        JPanel horizontal = new JPanel();
+        horizontal.add(new JLabel(" Elegir Velocidad "));
+        horizontal.add(speedSpinner);
+        return horizontal;
+    }
+    
+    private JPanel getFirstGeneralOptionsPanel(){
+        JPanel horizontal = new JPanel();
         horizontal.add(new JLabel(" Num Manzanas "));
         horizontal.add(nManzanasSpinner);
         horizontal.add(new JLabel(" X "));
@@ -76,34 +122,39 @@ public class IndividualOptionPanel extends JPanel{
         horizontal.add(xSizeSpinner);
         horizontal.add(new JLabel(" Tamaño "));
         horizontal.add(dSizeSpinner);
-        playerOptionsBox.add(horizontal);
-        
-        horizontal = new JPanel();
-        horizontal.add(new JLabel(" Elegir Velocidad "));
-        horizontal.add(speedSpinner);
-        playerOptionsBox.add(horizontal);
-        
-        playerOptionsBox.add(Box.createVerticalStrut(30));
-        
-        horizontal = new JPanel();
-        text = new JLabel("Opciones Jugadores");
+        return horizontal;
+    }
+    
+    private JPanel getPlayerOptionsTextPanel(){
+        JPanel horizontal = new JPanel();
+        JLabel text = new JLabel("Opciones Jugadores");
         text.setFont(new java.awt.Font("Liberation Sans", 1, 24));
         horizontal.add(text);
-        playerOptionsBox.add(horizontal);
-        
-        horizontal = new JPanel();
-        horizontal.add(new JLabel("Player 1"));
-        horizontal.add(keysButton);
-        horizontal.add(colorButton);
-        playerOptionsBox.add(horizontal);
-        back.add(playerOptionsBox);
-        back.add(exampleBack);
-        horizontal = new JPanel();
-        horizontal.add(acceptButton);
-        horizontal.add(cancelButton);
-        verticalBox.add(horizontal);
-        verticalBox.add(back);
-        this.add(verticalBox);
+        return horizontal;
+    }
+    
+    private JPanel getIndividualPlayerPanel(int i){
+        JPanel horizontal = new JPanel();
+        JButton deleteButton = new JButton("x");
+        deleteButton.setSize(30, 30);
+        deleteButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                options.getPlayers().remove(i);
+                keysButtons.remove(i);
+                colorButtons.remove(i);
+                setUpComponents();
+                owner.validate();
+                owner.revalidate();
+                owner.repaint();
+            }
+        });
+        deleteButton.setBackground(Color.WHITE);
+        horizontal.add(deleteButton);
+        horizontal.add(new JLabel("Player " + options.getPlayers().get(i).getId_Player()));
+        horizontal.add(keysButtons.get(i));
+        horizontal.add(colorButtons.get(i));
+        return horizontal;
     }
     
     public void updateExample() {
@@ -163,6 +214,10 @@ public class IndividualOptionPanel extends JPanel{
     }
 
     private void startButtons() {
+        addKeyButton();
+        
+        addColorButton();
+        
         acceptButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -179,25 +234,62 @@ public class IndividualOptionPanel extends JPanel{
         });
         cancelButton.setBackground(Color.WHITE);
         
-        keysButton.addActionListener(new ActionListener() {
+        addPlayerButton.setPreferredSize(new Dimension(150, 50));
+        addPlayerButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new KeysSelecter(owner, options.getPlayers().getFirst());
+                addPlayerAction();
             }
         });
-        keysButton.setBackground(Color.WHITE);
+        addPlayerButton.setBackground(Color.WHITE);
         
-        colorButton.setBackground(options.getPlayers().getFirst().getColor());
-        colorButton.setPreferredSize(new Dimension(70, 25));
-        colorButton.addActionListener(new ActionListener() {
+    }
+    
+    private void addPlayerAction(){
+        options.addPlayers(new Player());
+        
+        addKeyButton();
+        
+        addColorButton();
+        
+        setUpComponents();
+        owner.revalidate();
+        owner.validate();
+    }
+
+    private void addColorButton(){
+        int i = options.getPlayers().size() - 1;
+        Player actualPlayer = options.getPlayers().get(i);
+        
+        JButton colorActualButton;
+        colorActualButton = new JButton();
+        colorActualButton.setBackground(actualPlayer.getColor());
+        colorActualButton.setPreferredSize(new Dimension(70, 25));
+        colorActualButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new ColorSelecter(owner, options.getPlayers().getFirst());
-                colorButton.setBackground(options.getPlayers().getFirst().getColor());
+                new ColorSelecter(owner, actualPlayer);
+                colorActualButton.setBackground(actualPlayer.getColor());
+            }   
+        });
+        colorButtons.add(colorActualButton);
+    }
+    
+    private void addKeyButton() {
+        int i = options.getPlayers().size() - 1;
+        
+        Player actualPlayer = options.getPlayers().get(i);
+        
+        JButton keysActualButton = new JButton(options.getPlayers().get(i).keysToString());
+        keysActualButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new KeysSelecter(owner, actualPlayer);
+                keysActualButton.setText(actualPlayer.keysToString());
             }
         });
-        
-        
+        keysActualButton.setBackground(Color.WHITE);
+        keysButtons.add(keysActualButton);
     }
     
 }

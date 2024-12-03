@@ -16,37 +16,31 @@ public class Options {
     private int xPixelSize = 40;
     private int yPixelSize = 40;
     private int diagonalSize = 20;
-    private int initialSnakeSize = 3;
+    private int nManzanas = 1;
+    private int speed = 10;
 
     public Options() {
     }
 
     public int setxPixelSize(int xPixelSize) {
-        if (xPixelSize > 0) {
+        if (xPixelSize > 8) {
             this.xPixelSize = xPixelSize;
         }
         return this.xPixelSize;
     }
 
     public int setyPixelSize(int yPixelSize) {
-        if (yPixelSize > 0) {
+        if (yPixelSize > 8) {
             this.yPixelSize = yPixelSize;
         }
         return this.yPixelSize;
     }
 
     public int setDiagonalSize(int diagonalSize) {
-        if (diagonalSize > 0) {
+        if (diagonalSize > 5) {
             this.diagonalSize = diagonalSize;
         }
         return this.diagonalSize;
-    }
-
-    public int setInitialSnakeSize(int initialSnakeSize) {
-        if (initialSnakeSize > 0) {
-            this.initialSnakeSize = initialSnakeSize;
-        }
-        return this.initialSnakeSize;
     }
 
     public int getxPixelSize() {
@@ -60,11 +54,6 @@ public class Options {
     public int getDiagonalSize() {
         return diagonalSize;
     }
-
-    public int getInitialSnakeSize() {
-        return initialSnakeSize;
-    }
-
     public ArrayList<Player> getPlayers() {
         return players;
     }
@@ -75,6 +64,29 @@ public class Options {
 
     public void addPlayers(Player player) {
         this.players.add(player);
+    }
+
+    public int getnManzanas() {
+        return nManzanas;
+    }
+
+    public int setnManzanas(int nManzanas) {
+        if (nManzanas > 5) {
+            this.nManzanas = nManzanas;
+        }
+        return this.nManzanas;
+    }
+
+    public int getSpeed() {
+        return speed;
+    }
+
+    public int setSpeed(int speed) {
+        this.speed = speed;
+        if (speed > 5) {
+            this.speed = speed;
+        }
+        return this.speed;
     }
     
     

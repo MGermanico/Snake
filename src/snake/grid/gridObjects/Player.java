@@ -5,6 +5,7 @@
 package snake.grid.gridObjects;
 
 import java.awt.Color;
+import javax.swing.Icon;
 
 /**
  *
@@ -19,15 +20,22 @@ public class Player {
 
     public Player() {
         id_Player = Player.incrementId();
-        this.color = Color.BLACK;
-        char[] defaultKeys = {'a','w','s','d'};
-        this.keys = defaultKeys;
+        this.color = new Color((int)(Math.random()*230),(int)(Math.random()*230),(int)(Math.random()*230));
+        
+        if (id_Player == 0) {
+            char[] defaultKeys = {'a','w','s','d'};
+            this.keys = defaultKeys;
+        }else{
+            char[] defaultKeys = {'j','i','k','l'};
+            this.keys = defaultKeys;
+        }
     }
     
     private static int idCount = -1;
     
     int id_Player;
     Color color;
+    int initialSize;
     private char[] keys;
 
     public Player(Color color, char[] keys) {
@@ -63,7 +71,22 @@ public class Player {
 
     @Override
     public String toString() {
-        return "idPlayer = " +  id_Player + "";
+        return "idPlayer = " +  id_Player + " Color = " + color;
+    }
+
+    public int setInitialSize(int initialSize) {
+        if (initialSize > 0) {
+            this.initialSize = initialSize;
+        }
+        return this.initialSize;
+    }
+
+    public int getInitialSize() {
+        return initialSize;
+    }
+
+    public String keysToString() {
+        return "Teclas (" + keys[0] + "," + keys[1] + "," + keys[2] + "," + keys[3] + ")";
     }
     
     

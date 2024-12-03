@@ -18,15 +18,20 @@ public class LoopThread extends Thread{
     
     boolean end = false;
     
-    public LoopThread(GridManager gridManager) {
+    int nManzanas;
+    
+    public LoopThread(GridManager gridManager, int nManzanas) {
         this.gridManager = gridManager;
+        this.nManzanas = nManzanas;
     }
     
     @Override
     public void run() {
         gridManager.spawnHeads();
 
-        gridManager.setApple();
+        for (int i = 0; i < nManzanas; i++) {
+            gridManager.setApple();
+        }
 
         gridManager.initializeSizes();
         

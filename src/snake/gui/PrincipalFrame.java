@@ -19,7 +19,7 @@ public class PrincipalFrame extends JFrame{
     public static final int SETUP_MENU = 0;
     public static final int SETUP_SNAKE_GAME = 1;
     public static final int SETUP_MULTIPLAYER_OPTIONS = 2;
-    public static final int SETUP_INDIVIDUAL_OPTIONS = 2;
+    public static final int SETUP_INDIVIDUAL_OPTIONS = 3;
     
     JPanel back;
     
@@ -27,6 +27,8 @@ public class PrincipalFrame extends JFrame{
         this.setFocusable(true);
         this.setBounds(0, 0, 1000, 1000);
         this.setVisible(true);
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setExtendedState(JFrame.MAXIMIZED_BOTH);
         back = new JPanel();
         this.add(back);
         Options op = new Options();
@@ -53,7 +55,9 @@ public class PrincipalFrame extends JFrame{
             back.add(indivOptionPanel);
             indivOptionPanel.updateExample();
         }else if (type == SETUP_MULTIPLAYER_OPTIONS) {
-            
+            MultiplayerOptionPanel multiplayerOptionPanel = new MultiplayerOptionPanel(this);
+            back.add(multiplayerOptionPanel);
+            multiplayerOptionPanel.updateExample();
         }
         this.validate();
         this.revalidate();

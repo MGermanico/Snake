@@ -34,8 +34,6 @@ public class GridManager {
     public GridManager(int x, int y, int area, ArrayList<Player> players) {
         gridOfGrids = new GridOfGrids(x, y, area);
         SnakeManager actualSnakeManager;
-        Player actualPlayer;
-        char[] keys;
         for (Player player : players) {
             actualSnakeManager = new SnakeManager(this, player);
             snakeManagerList.add(actualSnakeManager);
@@ -54,8 +52,8 @@ public class GridManager {
         return gridOfGrids;
     }
 
-    public void startGame() {
-        gameThread = new LoopThread(this);
+    public void startGame(int nManzanas) {
+        gameThread = new LoopThread(this, nManzanas);
         gameThread.start();
     }
 
@@ -91,7 +89,7 @@ public class GridManager {
 
     public void initializeSizes() {
         for (SnakeManager snakeManager : snakeManagerList) {
-            snakeManager.setInitialSize(5);
+            snakeManager.setInitialSize(3);
         }
     }
     
