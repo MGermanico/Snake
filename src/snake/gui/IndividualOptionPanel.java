@@ -4,6 +4,7 @@
  */
 package snake.gui;
 
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.logging.Level;
@@ -15,6 +16,7 @@ import javax.swing.JSpinner;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import snake.grid.GridManager;
+import snake.grid.gridObjects.Player;
 
 /**
  *
@@ -34,8 +36,10 @@ public class IndividualOptionPanel extends JPanel{
     JSpinner dSizeSpinner = new JSpinner();
     
     JButton acceptButton = new JButton("Aceptar");
+    JButton keysButton = new JButton("Teclas");
     
     public IndividualOptionPanel(PrincipalFrame owner) {
+        options.addPlayers(new Player());
         this.owner = owner;
         startSpinners();
         startButtons();
@@ -47,7 +51,7 @@ public class IndividualOptionPanel extends JPanel{
 
     public void updateExample() {
         exampleBack.removeAll();
-        GridManager exampleGrid = new GridManager(options.getxPixelSize(), options.getyPixelSize(), options.getDiagonalSize(), 0);
+        GridManager exampleGrid = new GridManager(options.getxPixelSize(), options.getyPixelSize(), options.getDiagonalSize(), options.getPlayers());
         exampleBack.add(exampleGrid.getSizePanel());
         owner.validate();
         owner.revalidate();
@@ -94,6 +98,14 @@ public class IndividualOptionPanel extends JPanel{
             }
         });
         verticalBox.add(acceptButton);
+        
+        keysButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                KeysSelecter keySelector = new KeysSelecter(owner);
+            }
+        });
+        back.add(keysButton);
     }
     
     

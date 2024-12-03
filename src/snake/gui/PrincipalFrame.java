@@ -5,6 +5,7 @@
 package snake.gui;
 
 import java.awt.HeadlessException;
+import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -23,7 +24,7 @@ public class PrincipalFrame extends JFrame{
     JPanel back;
     
     public PrincipalFrame() throws HeadlessException {
-        
+        this.setFocusable(true);
         this.setBounds(0, 0, 1000, 1000);
         this.setVisible(true);
         back = new JPanel();
@@ -39,6 +40,7 @@ public class PrincipalFrame extends JFrame{
         if (type == SETUP_MENU) {
             MenuPanel menuPanel = new MenuPanel(this);
             back.add(menuPanel);
+            
         }else if(type == SETUP_SNAKE_GAME && options != null){
             SnakeWindow snakeWindow = new SnakeWindow(options);
             back.add(snakeWindow);
@@ -53,6 +55,9 @@ public class PrincipalFrame extends JFrame{
         }else if (type == SETUP_MULTIPLAYER_OPTIONS) {
             
         }
+        this.validate();
+        this.revalidate();
+        this.repaint();
     }
     
     public void setUp(int type){

@@ -86,8 +86,8 @@ public class GridOfGrids extends JPanel{
     }
     
     private double getPixelSize(int a) {
-        System.out.println(Math.sqrt(a*1000.0/(xPixel*yPixel)));
-        return Math.sqrt(a*1000.0/(xPixel*yPixel));
+        System.out.println(Math.sqrt(a*10000.0/(xPixel*yPixel)));
+        return Math.sqrt(a*10000.0/(xPixel*yPixel));
     }
     public void updateAllPanels(){
         int i = 0;

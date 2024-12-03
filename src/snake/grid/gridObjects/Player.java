@@ -16,6 +16,13 @@ public class Player {
         idCount++;
         return idCount;
     }
+
+    public Player() {
+        id_Player = Player.incrementId();
+        this.color = Color.BLACK;
+        char[] defaultKeys = {'a','w','s','d'};
+        this.keys = defaultKeys;
+    }
     
     private static int idCount = -1;
     

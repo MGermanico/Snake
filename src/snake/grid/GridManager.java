@@ -31,28 +31,13 @@ public class GridManager {
 
     ArrayList<SnakeManager> snakeManagerList = new ArrayList<>();
 
-    public GridManager(int x, int y, int area, int nPlayers) {
+    public GridManager(int x, int y, int area, ArrayList<Player> players) {
         gridOfGrids = new GridOfGrids(x, y, area);
         SnakeManager actualSnakeManager;
         Player actualPlayer;
         char[] keys;
-        for (int i = 0; i < nPlayers; i++) {
-            
-            keys = new char[4];
-            if (i == 0) {
-                keys[0] = 'a';
-                keys[1] = 'w';
-                keys[2] = 's';
-                keys[3] = 'd';
-                actualPlayer = new Player(Color.RED, keys);
-            } else {
-                keys[0] = 'j';
-                keys[1] = 'i';
-                keys[2] = 'k';
-                keys[3] = 'l';
-                actualPlayer = new Player(Color.BLACK, keys);
-            }
-            actualSnakeManager = new SnakeManager(this, actualPlayer);
+        for (Player player : players) {
+            actualSnakeManager = new SnakeManager(this, player);
             snakeManagerList.add(actualSnakeManager);
         }
     }

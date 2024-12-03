@@ -4,14 +4,18 @@
  */
 package snake.gui;
 
+import java.util.ArrayList;
+import snake.grid.gridObjects.Player;
+
 /**
  *
  * @author tarde
  */
 public class Options {
-    private int xPixelSize = 20;
-    private int yPixelSize = 20;
-    private int diagonalSize = 200;
+    ArrayList<Player> players = new ArrayList<>();
+    private int xPixelSize = 40;
+    private int yPixelSize = 40;
+    private int diagonalSize = 20;
     private int initialSnakeSize = 3;
 
     public Options() {
@@ -60,4 +64,18 @@ public class Options {
     public int getInitialSnakeSize() {
         return initialSnakeSize;
     }
+
+    public ArrayList<Player> getPlayers() {
+        return players;
+    }
+
+    public void setPlayers(ArrayList<Player> players) {
+        this.players = players;
+    }
+
+    public void addPlayers(Player player) {
+        this.players.add(player);
+    }
+    
+    
 }
