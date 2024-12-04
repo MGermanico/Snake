@@ -18,6 +18,8 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import snake.grid.gridObjects.Player;
 import snake.grid.gridObjects.Position;
+import snake.gui.Options;
+import snake.gui.Score;
 
 /**
  *
@@ -32,7 +34,12 @@ public class GridManager {
 
     ArrayList<SnakeManager> snakeManagerList = new ArrayList<>();
 
-    public GridManager(int x, int y, int area, ArrayList<Player> players) {
+    Score score;
+    
+    public GridManager(int x, int y, int area, ArrayList<Player> players, Score score) {
+        if (score != null) {
+            this.score = score;
+        }
         gridOfGrids = new GridOfGrids(x, y, area);
         SnakeManager actualSnakeManager;
         for (Player player : players) {
@@ -53,8 +60,8 @@ public class GridManager {
         return gridOfGrids;
     }
 
-    public void startGame(int nManzanas) {
-        gameThread = new LoopThread(this, nManzanas);
+    public void startGame(Options options) {
+        gameThread = new LoopThread(this, options);
         gameThread.start();
     }
     

@@ -21,6 +21,7 @@ public class Pixel {
     public static final int SNAKE_STATE = 1;
     public static final int APPLE_STATE = 2;
     public static final int WALL_STATE = 3;
+    public static final int RED_STATE = 4;
     
     public static final int NONE_DIRECTION = 0;
     public static final int UP_DIRECTION = 1;
@@ -105,6 +106,8 @@ public class Pixel {
             ret.setBackground(player.getColor());
         }else if (state == APPLE_STATE) {
             ret.setBackground(Color.GREEN);
+        }else if (state == RED_STATE) {
+            ret.setBackground(Color.RED);
         } else{
             ret.setBackground(Color.WHITE);
         }
@@ -195,6 +198,9 @@ public class Pixel {
                     ret.setBackground(Color.LIGHT_GRAY);
                 }
             }
+        if (state == RED_STATE) {
+            ret.setBackground(Color.RED);
+        }
         return ret;
     }
     

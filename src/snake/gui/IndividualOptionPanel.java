@@ -31,7 +31,7 @@ import snake.grid.gridObjects.Player;
 public class IndividualOptionPanel extends JPanel{
 
     private Options options = new Options();
-    private PrincipalFrame owner;
+    public PrincipalFrame owner;
     
     private Box verticalBox = Box.createVerticalBox();
     private Box playerOptionsBox = Box.createVerticalBox();
@@ -46,16 +46,21 @@ public class IndividualOptionPanel extends JPanel{
     
     private JButton acceptButton = new JButton("Aceptar");
     private JButton cancelButton = new JButton("Cancelar");
-    private JButton keysButton = new JButton("Teclas (a,w,s,d)");
+    private JButton keysButton = new JButton("Teclas ()");
     private JButton colorButton = new JButton();
     
     GridManager exampleGrid;
-    
-    public IndividualOptionPanel(PrincipalFrame owner) {
-        options.addPlayers(new Player());
+    ExampleLoopThread exLoop;
+   
+    public IndividualOptionPanel(PrincipalFrame owner, Options opt) {
+        if (opt != null) {
+            options = opt;
+        }else{
+            options.addPlayers(new Player());
+        }
         this.owner = owner;
-        exampleGrid = new GridManager(options.getxPixelSize(), options.getyPixelSize(), options.getDiagonalSize(), options.getPlayers());
-        ExampleLoopThread exLoop = new ExampleLoopThread(exampleGrid, owner);
+        exampleGrid = new GridManager(options.getxPixelSize(), options.getyPixelSize(), options.getDiagonalSize(), options.getPlayers(), null);
+        exLoop = new ExampleLoopThread(exampleGrid, this);
         exLoop.start();
         startSpinners();
         startButtons();
@@ -98,25 +103,69 @@ public class IndividualOptionPanel extends JPanel{
         
         horizontal = new JPanel();
         horizontal.add(new JLabel("Player 1"));
+        keysButton.setText(options.getPlayers().getFirst().keysToString());
         horizontal.add(keysButton);
         horizontal.add(colorButton);
         playerOptionsBox.add(horizontal);
         back.add(playerOptionsBox);
         back.add(exampleBack);
+        
+        horizontal = new JPanel();
+        text = new JLabel("MODO INDIVIDUAL");
+        text.setFont(new java.awt.Font("Liberation Sans", 1, 60));
+        horizontal.add(text);
+        verticalBox.add(horizontal);
+        
+        horizontal = new JPanel();
+        text = new JLabel("(opciones)");
+        text.setFont(new java.awt.Font("Liberation Sans", 1, 30));
+        horizontal.add(text);
+        verticalBox.add(horizontal);
+        
         horizontal = new JPanel();
         horizontal.add(acceptButton);
         horizontal.add(cancelButton);
+        verticalBox.add(Box.createVerticalStrut(40));
         verticalBox.add(horizontal);
         verticalBox.add(back);
         this.add(verticalBox);
     }
     
-    public void updateExample() {
+    public void updateExample(JPanel panel) {
         exampleBack.removeAll();
-        exampleBack.add(exampleGrid.getSizePanel());
+        exampleBack.add(panel);
         owner.validate();
         owner.revalidate();
         owner.repaint();
+    }
+    boolean waitting = false;
+    boolean pressing = false;
+    public void updateExample() {
+        if (!waitting) {
+            Thread waitThread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    pressing = true;
+                    exampleBack.removeAll();
+                    waitting = true;
+                    while(pressing){
+                        pressing = false;
+                        exLoop.waitMilis(500);
+                    }
+                    exampleGrid = new GridManager(options.getxPixelSize(), options.getyPixelSize(), options.getDiagonalSize(), options.getPlayers(), null);
+                    exLoop.setGridManager(exampleGrid);
+                    exLoop.updateAll();
+                    owner.validate();
+                    owner.revalidate();
+                    owner.repaint();
+                    waitting = false;
+                }
+            });
+            waitThread.start();
+        }else{
+            pressing = true;
+        }
+
     }
 
     private void startSpinners() {
@@ -125,7 +174,7 @@ public class IndividualOptionPanel extends JPanel{
             @Override
             public void stateChanged(ChangeEvent e) {
                 speedSpinner.setValue(options.setSpeed((int) speedSpinner.getValue()));
-                updateExample();
+                exLoop.setSpeed(options.getSpeed());
             }
         });
         
@@ -170,6 +219,7 @@ public class IndividualOptionPanel extends JPanel{
         acceptButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                exLoop.endGame();
                 owner.setUp(PrincipalFrame.SETUP_SNAKE_GAME, options);
             }
         });
@@ -178,6 +228,7 @@ public class IndividualOptionPanel extends JPanel{
         cancelButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                exLoop.endGame();
                 owner.setUp(PrincipalFrame.SETUP_MENU);
             }
         });

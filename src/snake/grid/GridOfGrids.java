@@ -233,4 +233,14 @@ public class GridOfGrids extends JPanel{
             }
         }
     }
+
+    public int getyPixel() {
+        return yPixel;
+    }
+
+    public int getxPixel() {
+        return xPixel;
+    }
+    
+    
 }

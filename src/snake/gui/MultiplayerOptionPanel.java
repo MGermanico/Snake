@@ -21,6 +21,7 @@ import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import snake.grid.ExampleLoopThread;
 import snake.grid.GridManager;
 import snake.grid.gridObjects.Player;
 
@@ -31,7 +32,7 @@ import snake.grid.gridObjects.Player;
 public class MultiplayerOptionPanel extends JPanel{
 
     private Options options = new Options();
-    private PrincipalFrame owner;
+    public PrincipalFrame owner;
     
     private Box verticalBox = Box.createVerticalBox();
     private Box playerOptionsBox = Box.createVerticalBox();
@@ -50,13 +51,22 @@ public class MultiplayerOptionPanel extends JPanel{
     private ArrayList<JButton> colorButtons = new ArrayList<>();
     private JButton addPlayerButton = new JButton("Añadir jugador");
     
-    public MultiplayerOptionPanel(PrincipalFrame owner) {
-        options.addPlayers(new Player());
+    GridManager exampleGrid;
+    ExampleLoopThread exLoop;
+    
+    public MultiplayerOptionPanel(PrincipalFrame owner, Options opt) {
+        if (opt != null) {
+            options = opt;
+        }else{
+            options.addPlayers(new Player());
+        }
         this.owner = owner;
+        exampleGrid = new GridManager(options.getxPixelSize(), options.getyPixelSize(), options.getDiagonalSize(), options.getPlayers(), null);
+        exLoop = new ExampleLoopThread(exampleGrid, this);
+        exLoop.start();
         startSpinners();
         startButtons();
         setUpComponents();
-        updateExample();
     }
     
     private void setUpComponents(){
@@ -89,9 +99,13 @@ public class MultiplayerOptionPanel extends JPanel{
         back.add(playerOptionsBox);
         back.add(exampleBack);
         
+        verticalBox.add(getTittlePanel());
+        verticalBox.add(getSubtittlePanel());
+        
         horizontal = new JPanel();
         horizontal.add(acceptButton);
         horizontal.add(cancelButton);
+        verticalBox.add(Box.createVerticalStrut(40));
         verticalBox.add(horizontal);
         verticalBox.add(back);
         this.add(verticalBox);
@@ -157,22 +171,69 @@ public class MultiplayerOptionPanel extends JPanel{
         return horizontal;
     }
     
-    public void updateExample() {
+    private JPanel getTittlePanel(){
+        JPanel horizontal = new JPanel();
+        JLabel text;
+        horizontal = new JPanel();
+        text = new JLabel("MODO MULTIJUGADOR");
+        text.setFont(new java.awt.Font("Liberation Sans", 1, 60));
+        horizontal.add(text);
+        return horizontal;
+    }
+    
+    private JPanel getSubtittlePanel(){
+        JPanel horizontal = new JPanel();
+        JLabel text;
+        horizontal = new JPanel();
+        text = new JLabel("(opciones)");
+        text.setFont(new java.awt.Font("Liberation Sans", 1, 30));
+        horizontal.add(text);
+        return horizontal;
+    }
+    
+    public void updateExample(JPanel panel) {
         exampleBack.removeAll();
-        GridManager exampleGrid = new GridManager(options.getxPixelSize(), options.getyPixelSize(), options.getDiagonalSize(), options.getPlayers());
-        exampleBack.add(exampleGrid.getSizePanel());
+        exampleBack.add(panel);
         owner.validate();
         owner.revalidate();
         owner.repaint();
     }
-
+    boolean waitting = false;
+    boolean pressing = false;
+    public void updateExample() {
+        if (!waitting) {
+            Thread waitThread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    pressing = true;
+                    exampleBack.removeAll();
+                    waitting = true;
+                    while(pressing){
+                        pressing = false;
+                        exLoop.waitMilis(500);
+                    }
+                    exampleGrid = new GridManager(options.getxPixelSize(), options.getyPixelSize(), options.getDiagonalSize(), options.getPlayers(), null);
+                    exLoop.setGridManager(exampleGrid);
+                    exLoop.updateAll();
+                    owner.validate();
+                    owner.revalidate();
+                    owner.repaint();
+                    waitting = false;
+                }
+            });
+            waitThread.start();
+        }else{
+            pressing = true;
+        }
+    }
+    
     private void startSpinners() {
         speedSpinner.setValue(options.getSpeed());
         speedSpinner.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
                 speedSpinner.setValue(options.setSpeed((int) speedSpinner.getValue()));
-                updateExample();
+                exLoop.setSpeed(options.getSpeed());
             }
         });
         
@@ -217,11 +278,20 @@ public class MultiplayerOptionPanel extends JPanel{
         addKeyButton();
         
         addColorButton();
-        
+        MultiplayerOptionPanel this2 = this;
         acceptButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                owner.setUp(PrincipalFrame.SETUP_SNAKE_GAME, options);
+                if (options.getPlayers().size() >= 2) {
+                    exLoop.endGame();
+                    owner.setUp(PrincipalFrame.SETUP_SNAKE_GAME, options);
+                }else if (options.getPlayers().size() == 1) {
+                    JOptionPane.showMessageDialog(this2, "Cambiando a modo un jugador");
+                    exLoop.endGame();
+                    owner.setUp(PrincipalFrame.SETUP_INDIVIDUAL_OPTIONS, options);
+                }else{
+                    JOptionPane.showMessageDialog(this2, "Añade al menos un jugador");
+                }
             }
         });
         acceptButton.setBackground(Color.WHITE);
@@ -229,6 +299,7 @@ public class MultiplayerOptionPanel extends JPanel{
         cancelButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                exLoop.endGame();
                 owner.setUp(PrincipalFrame.SETUP_MENU);
             }
         });

@@ -14,7 +14,7 @@ import snake.grid.gridObjects.Player;
 public class Options {
     ArrayList<Player> players = new ArrayList<>();
     private int xPixelSize = 40;
-    private int yPixelSize = 40;
+    private int yPixelSize = 70;
     private int diagonalSize = 20;
     private int nManzanas = 1;
     private int speed = 10;
@@ -82,8 +82,7 @@ public class Options {
     }
 
     public int setSpeed(int speed) {
-        this.speed = speed;
-        if (speed > 5) {
+        if (speed > 2 && speed <= 30) {
             this.speed = speed;
         }
         return this.speed;

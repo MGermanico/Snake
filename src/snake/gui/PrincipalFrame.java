@@ -23,7 +23,7 @@ public class PrincipalFrame extends JFrame{
     
     JPanel back;
     
-    public PrincipalFrame() throws HeadlessException {
+    public PrincipalFrame() {
         this.setFocusable(true);
         this.setBounds(0, 0, 1000, 1000);
         this.setVisible(true);
@@ -44,20 +44,18 @@ public class PrincipalFrame extends JFrame{
             back.add(menuPanel);
             
         }else if(type == SETUP_SNAKE_GAME && options != null){
-            SnakeWindow snakeWindow = new SnakeWindow(options);
+            SnakeWindow snakeWindow = new SnakeWindow(this, options);
             back.add(snakeWindow);
             
             for (KeyListener keyListener : snakeWindow.getGm().getKeyListeners()) {
                 this.addKeyListener(keyListener);
             }
         }else if (type == SETUP_INDIVIDUAL_OPTIONS) {
-            IndividualOptionPanel indivOptionPanel = new IndividualOptionPanel(this);
+            IndividualOptionPanel indivOptionPanel = new IndividualOptionPanel(this, options);
             back.add(indivOptionPanel);
-            indivOptionPanel.updateExample();
         }else if (type == SETUP_MULTIPLAYER_OPTIONS) {
-            MultiplayerOptionPanel multiplayerOptionPanel = new MultiplayerOptionPanel(this);
+            MultiplayerOptionPanel multiplayerOptionPanel = new MultiplayerOptionPanel(this, options);
             back.add(multiplayerOptionPanel);
-            multiplayerOptionPanel.updateExample();
         }
         this.validate();
         this.revalidate();

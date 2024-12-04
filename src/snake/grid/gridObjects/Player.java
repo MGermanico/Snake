@@ -34,6 +34,7 @@ public class Player {
     private static int idCount = -1;
     
     int id_Player;
+    int points = 0;
     Color color;
     int initialSize;
     private char[] keys;
@@ -87,6 +88,17 @@ public class Player {
 
     public String keysToString() {
         return "Teclas (" + keys[0] + "," + keys[1] + "," + keys[2] + "," + keys[3] + ")";
+    }
+
+    public int getPoints() {
+        return points;
+    }
+
+    public int setPoints(int points) {
+        if (points > 0) {
+            this.points = points;
+        }
+        return this.points;
     }
     
     

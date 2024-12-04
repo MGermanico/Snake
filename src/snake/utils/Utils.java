@@ -32,4 +32,7 @@ public class Utils {
     public static double distance(double n1, double n2){
         return Math.abs(n2 - n1);
     }
+    public static long speedToMilis(long speed){
+        return (long) (((500/(speed+15))-10)*2.5);
+    }
 }

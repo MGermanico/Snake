@@ -7,6 +7,8 @@ package snake.grid;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import snake.gui.Options;
+import snake.utils.Utils;
 
 /**
  *
@@ -20,9 +22,12 @@ public class LoopThread extends Thread{
     
     int nManzanas;
     
-    public LoopThread(GridManager gridManager, int nManzanas) {
+    long miliseconds;
+    
+    public LoopThread(GridManager gridManager, Options options) {
         this.gridManager = gridManager;
-        this.nManzanas = nManzanas;
+        this.miliseconds = Utils.speedToMilis(options.getSpeed());
+        this.nManzanas = options.getnManzanas();
     }
     
     @Override
@@ -46,7 +51,7 @@ public class LoopThread extends Thread{
                 } else {
                     i++;
                 }
-                Thread.sleep(40L);
+                Thread.sleep(miliseconds);
                 tick(i);
             } catch (InterruptedException ex) {
                 Logger.getLogger(GridManager.class.getName()).log(Level.SEVERE, null, ex);
