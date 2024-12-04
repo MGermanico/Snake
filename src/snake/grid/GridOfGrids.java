@@ -200,13 +200,35 @@ public class GridOfGrids extends JPanel{
         for (Grid[] gridOfGrid : gridOfGrids) {
             for (Grid grid : gridOfGrid) {
 //                    System.out.println("update");
+                if (grid.isUpdatable() || grid.isOneUpdate()) {
                     gridOfGridsPanel.remove(i);
                     gridOfGridsPanel.add(grid.getSizePanel(), i);
                     if (grid.isOneUpdate()) {
 //                        System.out.println("last update");
                         grid.incrementUpdatable();
                     }
+                }else{
+//                    gridOfGridsPanel.remove(i);
+//                    gridOfGridsPanel.add(grid.getNonUpdatablePanel(), i);
+                }
+                    
                 
+                i++;
+            }
+        }
+    }
+    public void updateAllSizePanels(){
+        int i = 0;
+        JPanel panelNoUp;
+        for (Grid[] gridOfGrid : gridOfGrids) {
+            for (Grid grid : gridOfGrid) {
+//                    System.out.println("update");
+                gridOfGridsPanel.remove(i);
+                gridOfGridsPanel.add(grid.getSizePanel(), i);
+                if (grid.isOneUpdate()) {
+//                        System.out.println("last update");
+                    grid.incrementUpdatable();
+                }
                 i++;
             }
         }

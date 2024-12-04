@@ -26,6 +26,7 @@ import snake.grid.gridObjects.Position;
 public class GridManager {
 
     LoopThread gameThread;
+    ExampleLoopThread exampleGameThread;
     
     GridOfGrids gridOfGrids;
 
@@ -56,7 +57,7 @@ public class GridManager {
         gameThread = new LoopThread(this, nManzanas);
         gameThread.start();
     }
-
+    
     public void spawnHeads() {
         for (SnakeManager snakeManager : snakeManagerList) {
             snakeManager.spawnHead();
@@ -109,7 +110,7 @@ public class GridManager {
             endGame();
         }
     }
-
+    
     public void endGame() {
         gameThread.endGame();
     }

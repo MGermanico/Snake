@@ -20,6 +20,7 @@ import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import snake.grid.ExampleLoopThread;
 import snake.grid.GridManager;
 import snake.grid.gridObjects.Player;
 
@@ -48,13 +49,17 @@ public class IndividualOptionPanel extends JPanel{
     private JButton keysButton = new JButton("Teclas (a,w,s,d)");
     private JButton colorButton = new JButton();
     
+    GridManager exampleGrid;
+    
     public IndividualOptionPanel(PrincipalFrame owner) {
         options.addPlayers(new Player());
         this.owner = owner;
+        exampleGrid = new GridManager(options.getxPixelSize(), options.getyPixelSize(), options.getDiagonalSize(), options.getPlayers());
+        ExampleLoopThread exLoop = new ExampleLoopThread(exampleGrid, owner);
+        exLoop.start();
         startSpinners();
         startButtons();
         setUpComponents();
-        updateExample();
     }
 
     private void setUpComponents(){
@@ -108,7 +113,6 @@ public class IndividualOptionPanel extends JPanel{
     
     public void updateExample() {
         exampleBack.removeAll();
-        GridManager exampleGrid = new GridManager(options.getxPixelSize(), options.getyPixelSize(), options.getDiagonalSize(), options.getPlayers());
         exampleBack.add(exampleGrid.getSizePanel());
         owner.validate();
         owner.revalidate();
