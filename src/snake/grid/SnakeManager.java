@@ -61,6 +61,8 @@ public class SnakeManager{
         gridManager.getGridOfGrids().getGridChunk(nextPixel.getChunkPosition()).setOneUpdatable();
         if (nextPixel.getState() == Pixel.APPLE_STATE) {
             gridManager.getGridOfGrids().setApple();
+            player.addPoint();
+            gridManager.score.updatePanel();
         }else if (!doBigger){
             gridManager.getGridOfGrids().deleteTail(prvsHeadPosition);
         }
@@ -71,10 +73,8 @@ public class SnakeManager{
         if (queueNextDirection != -1) {
             System.out.println(Pixel.positionToString(queueNextDirection));
             if(setNextDirection(queueNextDirection)){
-                System.out.println("cambiado");
                 queueNextDirection = -1;
             }else{
-                System.out.println("no cambiado");
             }
         }
     }
@@ -122,6 +122,7 @@ public class SnakeManager{
             @Override
             public void keyTyped(KeyEvent e) {
                 char key = e.getKeyChar();
+                System.out.println(key);
                 if (key == player.getKeys()[0]) {
                     setNextDirection(Pixel.LEFT_DIRECTION);
                 }else if (key == player.getKeys()[1]) {

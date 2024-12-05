@@ -14,22 +14,24 @@ import snake.grid.gridObjects.Player;
  *
  * @author tarde
  */
-public class Score {
+public class ScoreManager{
     
     private ArrayList<Player> players;
     
-    public Score(ArrayList<Player> players) {
+    public ScoreManager(ArrayList<Player> players) {
         this.players = players;
+        panel = new ScorePanel(players);
+    }
+    
+    public ScorePanel panel;
+    
+    public void updatePanel(){
+        panel.updatePanel(players);
+        panel.revalidate();
     }
     
     public JPanel getPanel(){
-        JPanel panel = new JPanel(new GridLayout(Math.ceilDiv(players.size(), 3), 3));
-        Player actualPlayer;
-        for (int i = 0; i < players.size(); i++) {
-            actualPlayer = players.get(i);
-            panel.add(new JLabel("Player " + actualPlayer.getId_Player() + " : " + actualPlayer.getPoints()));
-        }
+        updatePanel();
         return panel;
     }
-    
 }

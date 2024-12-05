@@ -72,7 +72,7 @@ public class Player {
 
     @Override
     public String toString() {
-        return "idPlayer = " +  id_Player + " Color = " + color;
+        return "idPlayer = " +  id_Player + " Color = " + color + " : " + points;
     }
 
     public int setInitialSize(int initialSize) {
@@ -101,5 +101,7 @@ public class Player {
         return this.points;
     }
     
-    
+    public void addPoint(){
+        this.points++;
+    }
 }

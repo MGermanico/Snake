@@ -30,7 +30,7 @@ public class SnakeWindow extends JPanel{
     
     GridManager gm;
     
-    Score score;
+    ScoreManager score;
     
     public SnakeWindow(PrincipalFrame owner, Options options) {
         this.owner = owner;
@@ -43,7 +43,7 @@ public class SnakeWindow extends JPanel{
     }
     
     private void initComponents(Options options){
-        score = new Score(options.getPlayers());
+        score = new ScoreManager(options.getPlayers());
         
         gm = new GridManager(options.getxPixelSize(), options.getyPixelSize(), options.getDiagonalSize(), options.getPlayers(), score);
     }
@@ -51,6 +51,7 @@ public class SnakeWindow extends JPanel{
     private void setUpComponents(Options options){
         verticalBox.add(getTittlePanel(options.getPlayers().size() > 1));
         verticalBox.add(score.getPanel());
+        verticalBox.add(Box.createVerticalStrut(40));
         verticalBox.add(getCancelPanel());
         verticalBox.add(gm.getPanel());
         this.add(verticalBox);

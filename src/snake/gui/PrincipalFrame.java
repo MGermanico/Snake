@@ -36,7 +36,16 @@ public class PrincipalFrame extends JFrame{
         setUp(SETUP_MENU);
         
     }
-
+    
+    public void setUpScoreBoard(ScoreManager score) {
+        back.removeAll();
+        MenuPanel menuPanel = new MenuPanel(this);
+        back.add(menuPanel);
+        this.validate();
+        this.revalidate();
+        this.repaint();
+    }
+    
     public void setUp(int type, Options options) {
         back.removeAll();
         if (type == SETUP_MENU) {
